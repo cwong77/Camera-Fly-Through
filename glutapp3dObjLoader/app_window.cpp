@@ -14,15 +14,19 @@ AppWindow::AppWindow ( const char* label, int x, int y, int w, int h )
    _rotx = _roty = 0;
    _w = w;
    _h = h;
-   tx = ty = 0.0f;
-   tz = 2.0f;
+   //tx = ty = 0.0f;
+   //tz = 2.0f;
  }
 
 void AppWindow::initPrograms ()
  {
    // Init my scene objects:
    _axis.init ();
-   _model.init ();
+   _bridge.init ();
+   _house1.init();
+   _house2.init();
+   _house3.init();
+   _house4.init();
 
    cam.init();
 
@@ -30,7 +34,7 @@ void AppWindow::initPrograms ()
    _light.set ( GsVec(0,0,10), GsColor(90,90,90,255), GsColor::white, GsColor::white );
 
    // Load demo model:
-   loadModel ( 2 );
+   loadModel ( 1 );
  }
 
 static void printInfo ( GsModel& m )
@@ -46,17 +50,43 @@ static void printInfo ( GsModel& m )
 void AppWindow::loadModel ( int model )
  {
    float f;
-   GsString file;
-   switch ( model )
-    { case 1: f=0.01f; file="../models/Sci-fi Tropical city.obj"; break;
-	  case 2: f=0.1f; file="../models/Bridges.obj"; break;
-      default: return;
-    }
-   std::cout<<"Loading "<<file<<"...\n";
-   if ( !_gsm.load ( file ) ) std::cout<<"Error!\n";
-   printInfo ( _gsm );
-   _gsm.scale ( f ); // to fit our camera space
-   _model.build(_gsm);
+   GsString file1, file2, file3, file4, file5;
+   f = 0.1f; 
+   file1 = "../models/Bridges.obj";
+   file2 = "../models/House_1.obj";
+   file3 = "../models/House_2.obj";
+   file4 = "../models/House_3.obj";
+   file5 = "../models/House_4.obj";
+
+   std::cout << "Loading "<< file1 << "...\n";
+   if (!_gsm1.load(file1)) std::cout << "Error!\n";
+   printInfo (_gsm1);
+   _gsm1.scale ( f ); // to fit our camera space
+   _bridge.build(_gsm1);
+
+   std::cout << "Loading " << file2 << "...\n";
+   if (!_gsm2.load(file2)) std::cout << "Error!\n";
+   printInfo(_gsm2);
+   _gsm2.scale(f); // to fit our camera space
+   _house1.build(_gsm2);
+
+   std::cout << "Loading " << file3 << "...\n";
+   if (!_gsm3.load(file3)) std::cout << "Error!\n";
+   printInfo(_gsm3);
+   _gsm3.scale(f); // to fit our camera space
+   _house2.build(_gsm3);
+
+   std::cout << "Loading " << file4 << "...\n";
+   if (!_gsm4.load(file4)) std::cout << "Error!\n";
+   printInfo(_gsm4);
+   _gsm4.scale(f); // to fit our camera space
+   _house3.build(_gsm4);
+
+   std::cout << "Loading " << file5 << "...\n";
+   if (!_gsm5.load(file5)) std::cout << "Error!\n";
+   printInfo(_gsm5);
+   _gsm5.scale(f); // to fit our camera space
+   _house4.build(_gsm5);
    redraw();
  }
 
@@ -76,26 +106,48 @@ void AppWindow::glutKeyboard ( unsigned char key, int x, int y )
     { case ' ': _viewaxis = !_viewaxis; redraw(); break;
 	  case 27 : exit(1); // Esc was pressed
       case 's' : std::cout<<"Smoothing normals...\n";
-                _gsm.smooth ( GS_TORAD(35) ); 
-                 printInfo(_gsm);
-                 _model.build(_gsm); 
+                 _gsm1.smooth (GS_TORAD(35));
+				 _gsm2.smooth(GS_TORAD(35));
+				 _gsm3.smooth(GS_TORAD(35));
+				 _gsm4.smooth(GS_TORAD(35));
+				 _gsm5.smooth(GS_TORAD(35));
+                 _bridge.build(_gsm1);
+				 _house1.build(_gsm2);
+				 _house2.build(_gsm3);
+				 _house3.build(_gsm4);
+				 _house4.build(_gsm5);
                  redraw(); 
                  break;
       case 'f' : std::cout<<"Flat normals...\n";
-                _gsm.flat();
-                 printInfo(_gsm);
-                 _model.build(_gsm); 
+                _gsm1.flat();
+				_gsm2.flat();
+				_gsm3.flat();
+				_gsm4.flat();
+				_gsm5.flat();
+				_bridge.build(_gsm1);
+				_house1.build(_gsm2);
+				_house2.build(_gsm3);
+				_house3.build(_gsm4);
+				_house4.build(_gsm5);
                  redraw(); 
                  break;
-      case 'p' : if ( !_model.phong() )
+      case 'p' : if ( !_bridge.phong() )
                   { std::cout<<"Switching to phong shader...\n";
-                    _model.phong(true);
+                    _bridge.phong(true);
+					_house1.phong(true);
+					_house2.phong(true);
+					_house3.phong(true);
+					_house4.phong(true);
                   }
                  redraw(); 
                  break;
-      case 'g' : if ( _model.phong() )
+      case 'g' : if ( _bridge.phong() )
                   { std::cout<<"Switching to gouraud shader...\n";
-                    _model.phong(false);
+                    _bridge.phong(false);
+					_house1.phong(false);
+					_house2.phong(false);
+					_house3.phong(false);
+					_house4.phong(false);
                   }
                  redraw(); 
                  break;
@@ -171,13 +223,10 @@ void AppWindow::glutDisplay ()
 
    // Define our projection transformation:
    // (see demo program in gltutors-projection.7z, we are replicating the same behavior here)
-   GsMat camview, persp, sproj;
+   GsMat persp, sproj;
 
    //GsVec eye(tx, ty, tz), center(tx,ty,tz-2), up(0,1,0);
-  // camview.lookat ( eye, center, up ); // set our 4x4 "camera" matrix
-
-   //std::cout << "camview " << camview << std::endl;
-   //std::cout << "cam.camview " << cam.getCamview() << std::endl;
+   //camview.lookat ( eye, center, up ); // set our 4x4 "camera" matrix
 
    float aspect=1.0f, znear=0.1f, zfar=50.0f;
    persp.perspective ( _fovy, aspect, znear, zfar ); // set our 4x4 perspective matrix
@@ -194,7 +243,11 @@ void AppWindow::glutDisplay ()
 
    // Draw:
    if ( _viewaxis ) _axis.draw ( stransf, sproj );
-   _model.draw ( stransf, sproj, _light );
+   _bridge.draw ( stransf, sproj, _light );
+   _house1.draw(stransf, sproj, _light);
+   _house2.draw(stransf, sproj, _light);
+   _house3.draw(stransf, sproj, _light);
+   _house4.draw(stransf, sproj, _light);
 
    // Swap buffers and draw:
    glFlush();         // flush the pipeline (usually not necessary)

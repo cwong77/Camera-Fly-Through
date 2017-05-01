@@ -22,12 +22,12 @@ class AppWindow : public GlutWindow
 
     // My scene objects:
     SoAxis _axis;
-    SoModel _model;
+    SoModel _bridge, _house1, _house2, _house3, _house4;
 	Camera cam;
 
     // Scene data:
     bool  _viewaxis;
-    GsModel _gsm;
+    GsModel _gsm1, _gsm2, _gsm3, _gsm4, _gsm5;
     GsLight _light;
 	float tx, ty, tz;
     
