@@ -22,11 +22,11 @@ void AppWindow::initPrograms ()
  {
    // Init my scene objects:
    _axis.init ();
-   _bridge.init ();
-   _house1.init();
-   _house2.init();
-   _house3.init();
-   _house4.init();
+   _bridge.init("../models/Texture.png");
+   _house1.init("../models/House_1.png");
+   _house2.init("../models/House_2.png");
+   _house3.init("../models/House_3.png");
+   _house4.init("../models/House_4.png");
 
    cam.init();
 
@@ -39,12 +39,12 @@ void AppWindow::initPrograms ()
 
 static void printInfo ( GsModel& m )
  {
-   std::cout<<"V:  "<<m.V.size()<<"\n";
-   std::cout<<"F:  "<<m.F.size()<<"\n";
-   std::cout<<"N:  "<<m.N.size()<<"\n";
-   std::cout<<"M:  "<<m.M.size()<<"\n";
-   std::cout<<"Fn: "<<m.Fn.size()<<"\n";
-   std::cout<<"Fm: "<<m.Fm.size()<<"\n";
+   //std::cout<<"V:  "<<m.V.size()<<"\n";
+   //std::cout<<"F:  "<<m.F.size()<<"\n";
+   //std::cout<<"N:  "<<m.N.size()<<"\n";
+   //std::cout<<"M:  "<<m.M.size()<<"\n";
+   //std::cout<<"Fn: "<<m.Fn.size()<<"\n";
+   //std::cout<<"Fm: "<<m.Fm.size()<<"\n";
  }
 
 void AppWindow::loadModel ( int model )
@@ -57,34 +57,34 @@ void AppWindow::loadModel ( int model )
    file3 = "../models/House_2.obj";
    file4 = "../models/House_3.obj";
    file5 = "../models/House_4.obj";
-
-   std::cout << "Loading "<< file1 << "...\n";
+   
+   //std::cout << "Loading "<< file1 << "...\n";
    if (!_gsm1.load(file1)) std::cout << "Error!\n";
-   printInfo (_gsm1);
+   //printInfo (_gsm1);
    _gsm1.scale ( f ); // to fit our camera space
    _bridge.build(_gsm1);
 
-   std::cout << "Loading " << file2 << "...\n";
+   //std::cout << "Loading " << file2 << "...\n";
    if (!_gsm2.load(file2)) std::cout << "Error!\n";
-   printInfo(_gsm2);
+   //printInfo(_gsm2);
    _gsm2.scale(f); // to fit our camera space
    _house1.build(_gsm2);
 
-   std::cout << "Loading " << file3 << "...\n";
+   //std::cout << "Loading " << file3 << "...\n";
    if (!_gsm3.load(file3)) std::cout << "Error!\n";
-   printInfo(_gsm3);
+   //printInfo(_gsm3);
    _gsm3.scale(f); // to fit our camera space
    _house2.build(_gsm3);
 
-   std::cout << "Loading " << file4 << "...\n";
+   //std::cout << "Loading " << file4 << "...\n";
    if (!_gsm4.load(file4)) std::cout << "Error!\n";
-   printInfo(_gsm4);
+   //printInfo(_gsm4);
    _gsm4.scale(f); // to fit our camera space
    _house3.build(_gsm4);
-
-   std::cout << "Loading " << file5 << "...\n";
+   
+   //std::cout << "Loading " << file5 << "...\n";
    if (!_gsm5.load(file5)) std::cout << "Error!\n";
-   printInfo(_gsm5);
+   //printInfo(_gsm5);
    _gsm5.scale(f); // to fit our camera space
    _house4.build(_gsm5);
    redraw();

@@ -4,6 +4,10 @@ Camera::Camera() {
 
 }
 
+Camera::Camera(GsArray<GsVec>& ctrl) {
+	controlpoints = ctrl;
+}
+
 GsMat& Camera::getCamview() {
 	return camview;
 }
@@ -19,15 +23,10 @@ void Camera::init() {
 	camview.lookat(eye, center, up);
 }
 
-//fill the control points
-//hardcoded to fit our map
-void Camera::setControlPoints() {
-
-}
-
 //gets the points to fly-through
 void Camera::eval_curve() {
-
+	//interpolate points
+	//use PA7
 }
 
 //look forward

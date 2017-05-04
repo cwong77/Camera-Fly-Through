@@ -32,7 +32,7 @@ class SoModel : public GlObjects
     GsArray<GsVec>   P; // coordinates
     GsArray<GsColor> C; // diffuse colors per face
     GsArray<GsVec>   N; // normals
-	GsArray<GsVec2>	T;	//texture
+	GsArray<GsPnt2>	T;	//texture
     GsMaterial _mtl;    // main material
     int _numpoints;     // just saves the number of points
     bool _phong;
@@ -40,7 +40,7 @@ class SoModel : public GlObjects
     SoModel ();
     void phong ( bool b ) { _phong=b; }
     bool phong () const { return _phong; }
-    void init ();
+    void init (std::string _path);
     void build ( GsModel& m );
     void draw ( const GsMat& tr, const GsMat& pr, const GsLight& l );
  };

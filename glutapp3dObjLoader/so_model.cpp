@@ -7,7 +7,7 @@ SoModel::SoModel()
    _phong = false;
  }
 
-void SoModel::init ()
+void SoModel::init (std::string _path)
  {
    _vshtex.load_and_compile ( GL_VERTEX_SHADER, "../texgouraud.vert" );
    _fshtex.load_and_compile ( GL_FRAGMENT_SHADER, "../texgouraud.frag" );
@@ -30,7 +30,7 @@ void SoModel::init ()
 
    //first image
    GsImage I;
-   if (!I.load("../models/Texture.png")) {
+   if (!I.load(_path.c_str())) {
 	   std::cout << "COULD NOT LOAD IMAGE!\n"; exit(1);
    }
    else
@@ -51,7 +51,7 @@ void SoModel::init ()
    glBindTexture(GL_TEXTURE_2D, 0);
    glBindVertexArray(0);
 
-   std::cout<< "before texid: " << _texid << std::endl;
+   //std::cout<< "before texid: " << _texid << std::endl;
 
    I.init(0, 0);
  }
@@ -79,8 +79,7 @@ void SoModel::build ( GsModel& m )
       if ( m.Fn.size()>0 && i<m.Fn.size() )
        { GsModel::Face& f = m.Fn[i];
          N.push()=m.N[f.a]; N.push()=m.N[f.b]; N.push()=m.N[f.c];
-         //std::cout<<i<<": "<<N.top()<<"\n";
-       }
+	  }
       else if ( m.N.size()>0 && i<m.N.size() )
        { GsVec n=m.N[i]; N.push()=n; N.push()=n; N.push()=n; }
       else
@@ -89,12 +88,7 @@ void SoModel::build ( GsModel& m )
 	  if (m.Ft.size() > 0 && i < m.Ft.size()) {
 		  GsModel::Face& f = m.Ft[i];
 		  T.push() = m.T[f.a]; T.push() = m.T[f.b]; T.push() = m.T[f.c];
-
 	  }
-	  //std::cout << "is there stuff in my texure coords?\n";
-	  //for (int i = 0; i < T.size(); ++i) {
-		//  std::cout << T[i] << std::endl;
-	  //}
 	  /*
       c = GsColor::gray;
       if ( m.Fm.size()>0 && i<m.Fm.size() ) 
@@ -108,11 +102,19 @@ void SoModel::build ( GsModel& m )
 	  */
     }
 
-   std::cout << "Tsize :" << T.size() << std::endl;
+   //std::cout << "is there stuff in my texure coords?\n";
+   //for (int i = 0; i < T.size(); ++i) {
+	 //  std::cout << T[i] << std::endl;
+   //}
+   //for (int i = 0; i < m.Ft.size(); ++i) {
+	 //  std::cout << m.Ft[i] << std::endl;
+   //}
+
+   std::cout << "Tsize: " << T.size() << std::endl;
    std::cout << "Psize: " << P.size() << std::endl;
    std::cout << "Nsize: " << N.size() << std::endl;
 
-   std::cout << "m.M.size(): " << m.M.size() << std::endl;
+   //std::cout << "m.M.size(): " << m.M.size() << std::endl;
    if (m.M.size() > 0) { _mtl = m.M[0]; }
    else _mtl.init();
 
@@ -170,11 +172,11 @@ void SoModel::draw ( const GsMat& tr, const GsMat& pr, const GsLight& l )
 	glUniform4fv(_progtex.uniloc[8], 1, _mtl.specular.get(f));
 	glUniform1fv(_progtex.uniloc[9], 1, &sh);
 
-	std::cout << "_mtl: " << _mtl << std::endl;
-	std::cout << "l.amb: " << l.amb  << " l.dif: " << l.dif << " l.spe: " << l.spe << std::endl;
-	std::cout << "l.pos: " << l.pos << std::endl;
+	//std::cout << "_mtl: " << _mtl << std::endl;
+	//std::cout << "l.amb: " << l.amb  << " l.dif: " << l.dif << " l.spe: " << l.spe << std::endl;
+	//std::cout << "l.pos: " << l.pos << std::endl;
 
-	std::cout << " after texid: " << _texid << std::endl;
+	//std::cout << " after texid: " << _texid << std::endl;
 
 	/*
    float f[4]; 

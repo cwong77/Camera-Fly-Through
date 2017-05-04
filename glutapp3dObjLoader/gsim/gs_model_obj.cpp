@@ -94,12 +94,12 @@ static void read_materials ( GsModel& model,
          texfile.len(texfile.len()-1); // removing '/n'
 		 //std::cout << "texfile: " << texfile << std::endl;
          M.top().texid = model.textures.size();
-		 std::cout << "texid: " << M.top().texid << std::endl;
+		 //std::cout << "texid: " << M.top().texid << std::endl;
          model.textures.push();
          model.textures.top().glid=-1;
          model.textures.top().fullfname=0;
 		 model.textures.top().fname = gs_string_new ( texfile );
-		 std::cout << "fname: " << model.textures.top().fname << std::endl;
+		 //std::cout << "fname: " << model.textures.top().fname << std::endl;
        }
       else if ( in.ltoken()=="map_Bump" ) // bump maps not loaded
        { in.skipline();
@@ -189,7 +189,7 @@ static bool process_line ( const GsString& line,
     { GS_TRACE1 ( "usemtl" );
       in.get();
       curmtl = mnames.lsearch ( in.ltoken() );
-	  std::cout << "inltoken: " << in.ltoken() << std::endl;
+	  //std::cout << "inltoken: " << in.ltoken() << std::endl;
       GS_TRACE3 ( "u curmtl = " << curmtl << " (" << in.ltoken() << ")" );
     }
    else if ( in.ltoken()=="mtllib" ) // mtllib file1 file2 ...
@@ -199,7 +199,7 @@ static bool process_line ( const GsString& line,
           in.readline(file);
           file.len(file.len()-1); // removing '/n'
           extract_filename(file, fname);
-		  std::cout << "fname: " << fname << std::endl;
+		 // std::cout << "fname: " << fname << std::endl;
           if(has_path(file)) {
               get_path(file, path);
               paths.push(path);

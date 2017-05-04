@@ -14,6 +14,7 @@ class Camera {
 
 public:
 	Camera();
+	Camera(GsArray<GsVec>& ctrl);
 	GsMat& getCamview();
 	void init();
 

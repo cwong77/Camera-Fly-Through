@@ -30,6 +30,8 @@ class AppWindow : public GlutWindow
     GsModel _gsm1, _gsm2, _gsm3, _gsm4, _gsm5;
     GsLight _light;
 	float tx, ty, tz;
+
+	GsArray<GsVec> cameraControlPoints;
     
     // App data:
     enum MenuEv { evOption0, evOption1 };
