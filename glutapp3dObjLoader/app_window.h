@@ -12,6 +12,8 @@
 # include "so_axis.h"
 # include "so_model.h"
 # include "camera.h"
+# include "so_lines.h"
+# include "curve_eval.h"
 
 // The functionality of your application should be implemented inside AppWindow
 class AppWindow : public GlutWindow
@@ -26,12 +28,17 @@ class AppWindow : public GlutWindow
 	Camera cam;
 
     // Scene data:
-    bool  _viewaxis;
+    bool  _viewaxis = false;
     GsModel _gsm1, _gsm2, _gsm3, _gsm4, _gsm5;
     GsLight _light;
 	float tx, ty, tz;
 
-	GsArray<GsVec> cameraControlPoints;
+	SoLines _lines;
+
+	CurveEval _cameraPath;
+
+	GsArray<GsVec> _cameraControlPoints;
+	GsArray<GsVec> _cameraInterpolation;
     
     // App data:
     enum MenuEv { evOption0, evOption1 };
@@ -52,6 +59,7 @@ class AppWindow : public GlutWindow
     virtual void glutMotion ( int x, int y );
     virtual void glutDisplay ();
     virtual void glutReshape ( int w, int h );
+	virtual void loadCameraCurve();
  };
 
 #endif // APP_WINDOW_H

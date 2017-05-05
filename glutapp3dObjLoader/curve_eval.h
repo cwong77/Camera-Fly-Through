@@ -12,7 +12,7 @@ public:
 	CurveEval();
 	GsVec eval_bezier(float t, const GsArray<GsVec>& ctrlpnts, float z);
 	GsVec eval_lagrange(float t, const GsArray<GsVec>& ctrlpnts, float z);
-	GsVec eval_bspline(float t, int k, const GsArray<GsVec>& ctrlpnts, float z);
+	GsVec eval_bspline(float t, int k, const GsArray<GsVec>& ctrlpnts);
 	GsVec eval_catrom(int t, const GsArray<GsVec>& ctrlpnts, bool minus);
 	GsVec eval_bover(int t, const GsArray<GsVec>& ctrlpnts, bool minus);
 	float cFunc(int n, int i);

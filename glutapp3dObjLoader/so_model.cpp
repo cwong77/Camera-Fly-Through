@@ -63,7 +63,7 @@ void SoModel::build ( GsModel& m )
 
    int i;
    GsColor c;
-   P.size(0); T.size(0); N.size(0);
+   P.size(0); T.size(0); N.size(0); NL.size(0);
 
    /* There are multiple ways to organize data to send to OpenGL. 
       Here we send material information per vertex but we only send the diffuse color
@@ -101,7 +101,9 @@ void SoModel::build ( GsModel& m )
       C.push()=c; C.push()=c; C.push()=c;
 	  */
     }
-
+   //for (int i = 0; i < N.size(); ++i) {
+	//   std::cout << N[i] << std::endl;
+//   }
    //std::cout << "is there stuff in my texure coords?\n";
    //for (int i = 0; i < T.size(); ++i) {
 	 //  std::cout << T[i] << std::endl;
@@ -110,6 +112,11 @@ void SoModel::build ( GsModel& m )
 	 //  std::cout << m.Ft[i] << std::endl;
    //}
 
+   for (int i = 0; i < P.size(); ++i) {
+	   NL.push(P[i]); NL.push(P[i] + N[i]*.01);
+   }
+   
+   std::cout << "NLsize: " << NL.size() << std::endl;
    std::cout << "Tsize: " << T.size() << std::endl;
    std::cout << "Psize: " << P.size() << std::endl;
    std::cout << "Nsize: " << N.size() << std::endl;
@@ -153,11 +160,6 @@ void SoModel::draw ( const GsMat& tr, const GsMat& pr, const GsLight& l )
 	float sh = (float)_mtl.shininess;
 	if (sh<0.001f) sh = 64;
 
-	float test[4] = { 1.0, 0.0, 0.0, 0.0 };
-	//_mtl.ambient = test;
-	//_mtl.diffuse = test;
-	//_mtl.ambient = test;
-
 	glUseProgram(_progtex.id);
 	glBindVertexArray(va[0]);
 	glBindTexture(GL_TEXTURE_2D, _texid);
@@ -172,46 +174,6 @@ void SoModel::draw ( const GsMat& tr, const GsMat& pr, const GsLight& l )
 	glUniform4fv(_progtex.uniloc[8], 1, _mtl.specular.get(f));
 	glUniform1fv(_progtex.uniloc[9], 1, &sh);
 
-	//std::cout << "_mtl: " << _mtl << std::endl;
-	//std::cout << "l.amb: " << l.amb  << " l.dif: " << l.dif << " l.spe: " << l.spe << std::endl;
-	//std::cout << "l.pos: " << l.pos << std::endl;
-
-	//std::cout << " after texid: " << _texid << std::endl;
-
-	/*
-   float f[4]; 
-   float sh = (float)_mtl.shininess;
-   if ( sh<0.001f ) sh=64;
-
-   if ( _phong )
-    { glUseProgram ( _progtex.id );
-      glUniformMatrix4fv ( _progtex.uniloc[0], 1, GL_FALSE, tr.e );
-      glUniformMatrix4fv ( _progtex.uniloc[1], 1, GL_FALSE, pr.e );
-      glUniform3fv ( _progtex.uniloc[2], 1, l.pos.e );
-      glUniform4fv ( _progtex.uniloc[3], 1, l.amb.get(f) );
-      glUniform4fv ( _progtex.uniloc[4], 1, l.dif.get(f) );
-      glUniform4fv ( _progtex.uniloc[5], 1, l.spe.get(f) );
-      glUniform4fv ( _progtex.uniloc[6], 1, _mtl.ambient.get(f) );
-      glUniform4fv ( _progtex.uniloc[7], 1, _mtl.specular.get(f) );
-      glUniform1fv ( _progtex.uniloc[8], 1, &sh );
-    }
-   else
-    { glUseProgram ( _proggouraud.id );
-      glUniformMatrix4fv ( _proggouraud.uniloc[0], 1, GL_FALSE, tr.e );
-      glUniformMatrix4fv ( _proggouraud.uniloc[1], 1, GL_FALSE, pr.e );
-      glUniform3fv ( _proggouraud.uniloc[2], 1, l.pos.e );
-      glUniform4fv ( _proggouraud.uniloc[3], 1, l.amb.get(f) );
-      glUniform4fv ( _proggouraud.uniloc[4], 1, l.dif.get(f) );
-      glUniform4fv ( _proggouraud.uniloc[5], 1, l.spe.get(f) );
-      glUniform4fv ( _proggouraud.uniloc[6], 1, _mtl.ambient.get(f) );
-      glUniform4fv ( _proggouraud.uniloc[7], 1, _mtl.specular.get(f) );
-      glUniform1fv ( _proggouraud.uniloc[8], 1, &sh );
-    }
-
-   glBindVertexArray ( va[0] );
-   glDrawArrays ( GL_TRIANGLES, 0, _numpoints );
-   glBindVertexArray(0); // break the existing vertex array object binding.
-   */
     glBindVertexArray ( va[0] );
 	glDrawArrays(GL_TRIANGLES, 0, _numpoints);
 	glBindVertexArray(0); // break the existing vertex array object binding.

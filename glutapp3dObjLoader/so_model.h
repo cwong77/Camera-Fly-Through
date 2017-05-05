@@ -29,14 +29,18 @@ class SoModel : public GlObjects
 
 	GLuint _texid;
 
-    GsArray<GsVec>   P; // coordinates
+    GsArray<GsPnt>   P; // coordinates
     GsArray<GsColor> C; // diffuse colors per face
     GsArray<GsVec>   N; // normals
 	GsArray<GsPnt2>	T;	//texture
+
+
     GsMaterial _mtl;    // main material
     int _numpoints;     // just saves the number of points
     bool _phong;
    public :
+	GsArray<GsVec> NL;
+
     SoModel ();
     void phong ( bool b ) { _phong=b; }
     bool phong () const { return _phong; }

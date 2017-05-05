@@ -117,6 +117,7 @@
   <ItemGroup>
     <ClCompile Include="..\app_main.cpp" />
     <ClCompile Include="..\camera.cpp" />
+    <ClCompile Include="..\curve_eval.cpp" />
     <ClCompile Include="..\gsim\gs_image.cpp" />
     <ClCompile Include="..\gsim\gs_input.cpp" />
     <ClCompile Include="..\gsim\gs_material.cpp" />
@@ -135,11 +136,13 @@
     <ClCompile Include="..\gsim\gs_vec.cpp" />
     <ClCompile Include="..\gsim\gs_vec2.cpp" />
     <ClCompile Include="..\ogl_tools.cpp" />
+    <ClCompile Include="..\so_lines.cpp" />
     <ClCompile Include="..\so_model.cpp" />
     <ClCompile Include="..\so_myobject.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\camera.h" />
+    <ClInclude Include="..\curve_eval.h" />
     <ClInclude Include="..\gsim\gs_image.h" />
     <ClInclude Include="..\gsim\gs_manager.h" />
     <ClInclude Include="..\gsim\gs_input.h" />
@@ -163,6 +166,7 @@
     <ClInclude Include="..\gsim\gs_vec.h" />
     <ClInclude Include="..\gsim\gs_vec2.h" />
     <ClInclude Include="..\ogl_tools.h" />
+    <ClInclude Include="..\so_lines.h" />
     <ClInclude Include="..\so_model.h" />
     <ClInclude Include="..\so_myobject.h" />
   </ItemGroup>

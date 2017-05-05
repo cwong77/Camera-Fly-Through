@@ -32,13 +32,13 @@ GsVec CurveEval::eval_lagrange(float t, const GsArray<GsVec>& ctrlpnts, float z)
 }
 
 //----------------------------------------------------------------------------------------------------------
-GsVec CurveEval::eval_bspline(float t, int k, const GsArray<GsVec>& ctrlpnts, float z) {
+GsVec CurveEval::eval_bspline(float t, int k, const GsArray<GsVec>& ctrlpnts) {
 	int n = ctrlpnts.size() - 1;
-	GsVec2 point = GsVec2(0.0f, 0.0f);
+	GsVec point = GsVec(0.0f, 0.0f, 0.0f);
 	for (int i = 0; i <= n; i++) {
 		point = point + (ctrlpnts(i)*N(i, 3, t));
 	}
-	return GsVec(point.x, point.y, z);
+	return GsVec(point.x, point.y, point.z);
 }
 
 //----------------------------------------------------------------------------------------------------------

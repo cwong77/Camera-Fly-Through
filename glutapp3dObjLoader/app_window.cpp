@@ -18,6 +18,38 @@ AppWindow::AppWindow ( const char* label, int x, int y, int w, int h )
    //tz = 2.0f;
  }
 
+void AppWindow::loadCameraCurve() {
+	//std::cout << "loading cam curve\n";
+
+	//push control points
+	/**********************Fill these in Tyler**********************/
+	/*******************VERY IMPORTANT: NO SUPPORT TO CHECK WHEN THE CAMERA HAS GONE THROUGH THE WHOLE CURVE
+						SO THE CURVE MUST LOOP OR JUST CALL ME TO FIX IT	
+						NOT HEAVILY TESTED SO CALL ME IF IT DOESN'T WORK
+						CAMERA ONLY LOOKS FORWARD
+	*****************************************/
+	//these are random control points
+	_cameraControlPoints.push(GsVec(1.0, 0.0, 0.0));
+	_cameraControlPoints.push(GsVec(.75, 0.25, 0.0));
+	_cameraControlPoints.push(GsVec(.5, .5, 0.0));
+	_cameraControlPoints.push(GsVec(.25, .75, 0.0));
+	_cameraControlPoints.push(GsVec(0.0, 0.0, 1.0));
+	/***************************************************************/
+
+	//interpolate them
+	float interval = (float)(_cameraControlPoints.size()) / 128;
+	for (float i = 2; i < _cameraControlPoints.size(); i += interval){
+		_cameraInterpolation.push(_cameraPath.eval_bspline(i, 3, _cameraControlPoints));
+	}
+
+	for (int i = 0; i < _cameraInterpolation.size(); ++i) {
+		std::cout << _cameraInterpolation[i] << std::endl;
+	}
+
+	//give them to the camera
+	cam.init(_cameraInterpolation);
+}
+
 void AppWindow::initPrograms ()
  {
    // Init my scene objects:
@@ -28,10 +60,13 @@ void AppWindow::initPrograms ()
    _house3.init("../models/House_3.png");
    _house4.init("../models/House_4.png");
 
-   cam.init();
-
    // set light:
    _light.set ( GsVec(0,0,10), GsColor(90,90,90,255), GsColor::white, GsColor::white );
+
+   _lines.init();	//normal lines for testing purposes
+   loadCameraCurve();	//initializes the camera with a curve to follow
+
+   _lines.build(_house1.NL, GsColor::red);
 
    // Load demo model:
    loadModel ( 1 );
@@ -57,25 +92,25 @@ void AppWindow::loadModel ( int model )
    file3 = "../models/House_2.obj";
    file4 = "../models/House_3.obj";
    file5 = "../models/House_4.obj";
-   
+   /*
    //std::cout << "Loading "<< file1 << "...\n";
    if (!_gsm1.load(file1)) std::cout << "Error!\n";
    //printInfo (_gsm1);
    _gsm1.scale ( f ); // to fit our camera space
    _bridge.build(_gsm1);
-
+   */
    //std::cout << "Loading " << file2 << "...\n";
-   if (!_gsm2.load(file2)) std::cout << "Error!\n";
+   //if (!_gsm2.load(file2)) std::cout << "Error!\n";
    //printInfo(_gsm2);
-   _gsm2.scale(f); // to fit our camera space
-   _house1.build(_gsm2);
-
+   //_gsm2.scale(f); // to fit our camera space
+   //_house1.build(_gsm2);
+   
    //std::cout << "Loading " << file3 << "...\n";
    if (!_gsm3.load(file3)) std::cout << "Error!\n";
    //printInfo(_gsm3);
    _gsm3.scale(f); // to fit our camera space
    _house2.build(_gsm3);
-
+   /*
    //std::cout << "Loading " << file4 << "...\n";
    if (!_gsm4.load(file4)) std::cout << "Error!\n";
    //printInfo(_gsm4);
@@ -87,6 +122,10 @@ void AppWindow::loadModel ( int model )
    //printInfo(_gsm5);
    _gsm5.scale(f); // to fit our camera space
    _house4.build(_gsm5);
+   */
+
+   _lines.build(_house2.NL, GsColor::red);
+
    redraw();
  }
 
@@ -158,6 +197,16 @@ void AppWindow::glutKeyboard ( unsigned char key, int x, int y )
 	  case 'l': tx += 0.05f; redraw(); break;
 	  case '7': tz -= 0.05f; redraw(); break;
 	  case '8': tz += 0.05f; redraw(); break;
+
+	  case 'n': 
+		  /*****************Hold n (or whatever button you want to use) down***********************/
+		  /*****************Don't know how to get it to loop because it only redraws at the end****/
+		  //for (int i = 0; i < _cameraInterpolation.size(); ++i) {
+			  //std::cout << "moving\n";
+			  cam.move();
+			  redraw();
+		  //}
+		  break;
 
       default : loadModel ( int(key-'0') );
                 break;
@@ -243,11 +292,13 @@ void AppWindow::glutDisplay ()
 
    // Draw:
    if ( _viewaxis ) _axis.draw ( stransf, sproj );
+
    _bridge.draw ( stransf, sproj, _light );
    _house1.draw(stransf, sproj, _light);
    _house2.draw(stransf, sproj, _light);
    _house3.draw(stransf, sproj, _light);
    _house4.draw(stransf, sproj, _light);
+   _lines.draw(stransf, sproj);
 
    // Swap buffers and draw:
    glFlush();         // flush the pipeline (usually not necessary)

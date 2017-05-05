@@ -12,13 +12,13 @@ class Camera {
 	GsArray<GsVec> controlpoints;
 	GsArray<GsVec> interpolation;
 
+	int camIndex;	//where we are in the curve;
+
 public:
 	Camera();
-	Camera(GsArray<GsVec>& ctrl);
 	GsMat& getCamview();
-	void init();
+	void init(GsArray<GsVec> interpolation);
 
-	void setControlPoints();
 	void eval_curve();
 
 	void lookForward(int i);
