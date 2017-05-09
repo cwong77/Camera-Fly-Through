@@ -270,7 +270,7 @@ void AppWindow::glutDisplay ()
    // Build ground (if not built yet):
    if (_ground.changed) // needs update
    {
-	   _ground.build(-20.0f, 20.0f, -20.0f, 20.0f, 0.0f); // xz plane at y=0.0f
+	   _ground.build(-10.0f, 10.0f, -10.0f, 10.0f, 0.0f); // xz plane at y=0.0f
    }
 
    // Define our scene transformation:

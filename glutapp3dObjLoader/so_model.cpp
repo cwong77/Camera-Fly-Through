@@ -126,22 +126,22 @@ void SoModel::build ( GsModel& m )
    else _mtl.init();
 
    // send data to OpenGL buffers:
-   glBindVertexArray ( va[0] );
-   glEnableVertexAttribArray ( 0 );
-   glEnableVertexAttribArray ( 1 );
-   glEnableVertexAttribArray ( 2 );
+    glBindVertexArray(va[0]);
+    glEnableVertexAttribArray(0);
+    glEnableVertexAttribArray(1);
+    glEnableVertexAttribArray(2);
 
-   glBindBuffer ( GL_ARRAY_BUFFER, buf[0] );
-   glBufferData ( GL_ARRAY_BUFFER, 3*sizeof(float)*P.size(), P.pt(), GL_STATIC_DRAW );
-   glVertexAttribPointer ( 0, 3, GL_FLOAT, GL_FALSE, 0, 0 );
+    glBindBuffer(GL_ARRAY_BUFFER, buf[0]);
+    glBufferData(GL_ARRAY_BUFFER, 3 * sizeof(float)*P.size(), P.pt(), GL_STATIC_DRAW);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
-   glBindBuffer ( GL_ARRAY_BUFFER, buf[1] );
-   glBufferData ( GL_ARRAY_BUFFER, 3*sizeof(float)*N.size(), N.pt(), GL_STATIC_DRAW );
-   glVertexAttribPointer ( 1, 3, GL_FLOAT, GL_FALSE, 0, 0 );
+    glBindBuffer(GL_ARRAY_BUFFER, buf[1]);
+    glBufferData(GL_ARRAY_BUFFER, 3 * sizeof(float)*N.size(), N.pt(), GL_STATIC_DRAW);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
-   glBindBuffer ( GL_ARRAY_BUFFER, buf[2] );
-   glBufferData ( GL_ARRAY_BUFFER, 2*sizeof(float)*T.size(), T.pt(), GL_STATIC_DRAW );
-   glVertexAttribPointer ( 2, 2, GL_FLOAT, GL_FALSE, 0, 0 );
+    glBindBuffer(GL_ARRAY_BUFFER, buf[2]);
+    glBufferData(GL_ARRAY_BUFFER, 2*sizeof(float)*T.size(), T.pt(), GL_STATIC_DRAW);
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, 0);
 
    glBindVertexArray(0); // break the existing vertex array object binding.
 
