@@ -139,6 +139,7 @@
     <ClCompile Include="..\so_lines.cpp" />
     <ClCompile Include="..\so_model.cpp" />
     <ClCompile Include="..\so_myobject.cpp" />
+    <ClCompile Include="..\so_plane.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\camera.h" />
@@ -169,6 +170,7 @@
     <ClInclude Include="..\so_lines.h" />
     <ClInclude Include="..\so_model.h" />
     <ClInclude Include="..\so_myobject.h" />
+    <ClInclude Include="..\so_plane.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\flat.frag" />

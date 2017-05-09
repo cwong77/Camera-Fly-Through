@@ -14,6 +14,7 @@
 # include "camera.h"
 # include "so_lines.h"
 # include "curve_eval.h"
+# include "so_plane.h"
 
 // The functionality of your application should be implemented inside AppWindow
 class AppWindow : public GlutWindow
@@ -25,6 +26,7 @@ class AppWindow : public GlutWindow
     // My scene objects:
     SoAxis _axis;
     SoModel _bridge, _house1, _house2, _house3, _house4;
+	SoPlane _ground;
 	Camera cam;
 
     // Scene data:

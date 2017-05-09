@@ -11,7 +11,8 @@ AppWindow::AppWindow ( const char* label, int x, int y, int w, int h )
    addMenuEntry ( "Option 1", evOption1 );
    _viewaxis = true;
    _fovy = GS_TORAD(60.0f);
-   _rotx = _roty = 0;
+   _rotx = 0.05f;
+   _roty = 0;
    _w = w;
    _h = h;
    //tx = ty = 0.0f;
@@ -60,8 +61,10 @@ void AppWindow::initPrograms ()
    _house3.init("../models/House_3.png");
    _house4.init("../models/House_4.png");
 
+   _ground.init();
+
    // set light:
-   _light.set ( GsVec(0,0,10), GsColor(90,90,90,255), GsColor::white, GsColor::white );
+   _light.set ( GsVec(0,5,10), GsColor(90,90,90,255), GsColor::white, GsColor::white );
 
    _lines.init();	//normal lines for testing purposes
    loadCameraCurve();	//initializes the camera with a curve to follow
@@ -264,6 +267,12 @@ void AppWindow::glutDisplay ()
     { _axis.build(1.0f); // axis has radius 1.0
     }
 
+   // Build ground (if not built yet):
+   if (_ground.changed) // needs update
+   {
+	   _ground.build(-20.0f, 20.0f, -20.0f, 20.0f, 0.0f); // xz plane at y=0.0f
+   }
+
    // Define our scene transformation:
    GsMat rx, ry, stransf;
    rx.rotx ( _rotx );
@@ -299,6 +308,7 @@ void AppWindow::glutDisplay ()
    _house3.draw(stransf, sproj, _light);
    _house4.draw(stransf, sproj, _light);
    _lines.draw(stransf, sproj);
+   _ground.draw(stransf, sproj, _light);
 
    // Swap buffers and draw:
    glFlush();         // flush the pipeline (usually not necessary)
