@@ -78,7 +78,7 @@ void SoModel::build ( GsModel& m )
 
       if ( m.Fn.size()>0 && i<m.Fn.size() )
        { GsModel::Face& f = m.Fn[i];
-         N.push()=m.N[f.a]; N.push()=m.N[f.b]; N.push()=m.N[f.c];
+         N.push()=-m.N[f.a]; N.push()=-m.N[f.b]; N.push()=-m.N[f.c];
 	  }
       else if ( m.N.size()>0 && i<m.N.size() )
        { GsVec n=m.N[i]; N.push()=n; N.push()=n; N.push()=n; }
