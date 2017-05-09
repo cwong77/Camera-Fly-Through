@@ -170,9 +170,9 @@ void SoModel::draw ( const GsMat& tr, const GsMat& pr, const GsLight& l )
 	glUniform4fv(_progtex.uniloc[4], 1, l.dif.get(f));
 	glUniform4fv(_progtex.uniloc[5], 1, l.spe.get(f));
 	glUniform4fv(_progtex.uniloc[6], 1, _mtl.ambient.get(f));
-	glUniform4fv(_progtex.uniloc[7], 1, _mtl.diffuse.get(f));
-	glUniform4fv(_progtex.uniloc[8], 1, _mtl.specular.get(f));
-	glUniform1fv(_progtex.uniloc[9], 1, &sh);
+	//glUniform4fv(_progtex.uniloc[7], 1, _mtl.diffuse.get(f));
+	glUniform4fv(_progtex.uniloc[7], 1, _mtl.specular.get(f));
+	glUniform1fv(_progtex.uniloc[8], 1, &sh);
 
     glBindVertexArray ( va[0] );
 	glDrawArrays(GL_TRIANGLES, 0, _numpoints);

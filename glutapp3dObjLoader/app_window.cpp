@@ -61,7 +61,7 @@ void AppWindow::initPrograms ()
    _house3.init("../models/House_3.png");
    _house4.init("../models/House_4.png");
 
-   _ground.init();
+   _ground.init("../models/Ground.png");
 
    // set light:
    _light.set ( GsVec(0,5,10), GsColor(90,90,90,255), GsColor::white, GsColor::white );
@@ -307,7 +307,7 @@ void AppWindow::glutDisplay ()
    _house2.draw(stransf, sproj, _light);
    _house3.draw(stransf, sproj, _light);
    _house4.draw(stransf, sproj, _light);
-   _lines.draw(stransf, sproj);
+   //_lines.draw(stransf, sproj);
    _ground.draw(stransf, sproj, _light);
 
    // Swap buffers and draw:
@@ -315,4 +315,10 @@ void AppWindow::glutDisplay ()
    glutSwapBuffers(); // we were drawing to the back buffer, now bring it to the front
 }
 
-
+void AppWindow::translation(GsMat &translate, float x, float y, float z)
+{
+	translate.setl1(1.0f, 0.0f, 0.0f, x);
+	translate.setl2(0.0f, 1.0f, 0.0f, y);
+	translate.setl3(0.0f, 0.0f, 1.0f, z);
+	translate.setl4(0.0f, 0.0f, 0.0f, 1.0f);
+}

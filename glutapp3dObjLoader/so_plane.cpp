@@ -7,12 +7,14 @@ SoPlane::SoPlane()
 	_flatn = false;
 }
 
-void SoPlane::init()
+void SoPlane::init(std::string _path)
 {
 	// Load programs:
-	_vshgou.load_and_compile(GL_VERTEX_SHADER, "../mcol_phong.vert");
-	_fshgou.load_and_compile(GL_FRAGMENT_SHADER, "../mcol_phong.frag");
-	_proggouraud.init_and_link(_vshgou, _fshgou);
+	//_vshgou.load_and_compile(GL_VERTEX_SHADER, "../mcol_phong.vert");
+	//_fshgou.load_and_compile(GL_FRAGMENT_SHADER, "../mcol_phong.frag");
+	_vshtex.load_and_compile(GL_VERTEX_SHADER, "../texgouraud.vert");
+	_fshtex.load_and_compile(GL_FRAGMENT_SHADER, "../texgouraud.frag");
+	_proggouraud.init_and_link(_vshtex, _fshtex);
 
 	// Define buffers needed:
 	gen_vertex_arrays(1); // will use 1 vertex array
@@ -28,6 +30,32 @@ void SoPlane::init()
 	_proggouraud.uniform_location(6, "ka");
 	_proggouraud.uniform_location(7, "ks");
 	_proggouraud.uniform_location(8, "sh");
+
+	GsImage I;
+	if (!I.load(_path.c_str())) {
+		std::cout << "COULD NOT LOAD IMAGE!\n"; exit(1);
+	}
+	else
+		std::cout << "LOADED IMAGE\n";
+
+	glGenTextures(1, &_texid);
+	glBindTexture(GL_TEXTURE_2D, _texid);
+	glTexImage2D(GL_TEXTURE_2D, 0, 4, I.w(), I.h(), 0, GL_RGBA, GL_UNSIGNED_BYTE, I.data());
+
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+
+	glGenerateMipmap(GL_TEXTURE_2D);
+
+	glBindTexture(GL_TEXTURE_2D, 0);
+	glBindVertexArray(0);
+
+	//std::cout<< "before texid: " << _texid << std::endl;
+
+	I.init(0, 0);
 }
 
 void SoPlane::build(float xmin, float xmax, float zmin, float zmax, float y)
@@ -38,10 +66,11 @@ void SoPlane::build(float xmin, float xmax, float zmin, float zmax, float y)
 	int i;
 	GsVec line;
 
-	P.size(0); C.size(0); N.size(0); NL.size(0);
+	P.size(0); C.size(0); N.size(0); NL.size(0); T.size(0);
 	for (int j = xmin; j < xmax; j++) {
 		for (int k = zmin; k < zmax; k++) {
 			P.push(GsVec(j+1, y, k+1)); P.push(GsVec(j, y, k+1)); P.push(GsVec(j, y, k));
+			T.push(GsVec2((j+1-xmin)/(xmax-xmin), (k+1-zmin)/(zmax-zmin))); T.push(GsVec2((j-xmin)/(xmax-xmin),(k+1-zmin)/(zmax-zmin))); T.push(GsVec2((j-xmin)/(xmax-xmin), (k-zmin)/(zmax-zmin)));
 			dir = cross((GsVec(j, y, k) - GsVec(j+1, y, k+1)), (GsVec(j, y, k+1) - GsVec(j+1, y, k+1)));
 			N.push(dir / dir.len()); N.push(dir / dir.len()); N.push(dir / dir.len());
 			line = (GsVec(j+1, y, k+1) + GsVec(j, y, k+1) + GsVec(j, y, k)) / 3.0f;
@@ -49,6 +78,7 @@ void SoPlane::build(float xmin, float xmax, float zmin, float zmax, float y)
 
 			//triangle 2 of face
 			P.push(GsVec(j+1, y, k+1)); P.push(GsVec(j, y, k)); P.push(GsVec(j+1, y, k));
+			T.push(GsVec2((j+1-xmin)/(xmax-xmin), (k+1-zmin)/(zmax-zmin))); T.push(GsVec2((j-xmin)/(xmax-xmin), (k-zmin)/(zmax-zmin))); T.push(GsVec2((j+1-xmin)/(xmax-xmin), (k-zmin)/(zmax-zmin)));
 			dir = cross((GsVec(j+1, y, k) - GsVec(j+1, y, k+1)), (GsVec(j, y, k) - GsVec(j+1, y, k+1)));
 			N.push(dir / dir.len()); N.push(dir / dir.len()); N.push(dir / dir.len());
 			line = (GsVec(j+1, y, k+1) + GsVec(j, y, k) + GsVec(j+1, y, k)) / 3.0f;
@@ -75,7 +105,7 @@ void SoPlane::build(float xmin, float xmax, float zmin, float zmax, float y)
 
 	glBindBuffer(GL_ARRAY_BUFFER, buf[2]);
 	glBufferData(GL_ARRAY_BUFFER, 4 * sizeof(gsbyte)*C.size(), C.pt(), GL_STATIC_DRAW);
-	glVertexAttribPointer(2, 4, GL_UNSIGNED_BYTE, GL_FALSE, 0, 0);
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, 0);
 
 	glBindVertexArray(0); // break the existing vertex array object binding.
 
@@ -83,7 +113,7 @@ void SoPlane::build(float xmin, float xmax, float zmin, float zmax, float y)
 	_numpoints = P.size();
 
 	// free non-needed memory:
-	P.capacity(0); C.capacity(0); N.capacity(0);
+	P.capacity(0); C.capacity(0); N.capacity(0);  T.capacity(0);
 	// (leave NL untouched because it will be used by another class for display)
 }
 
@@ -94,6 +124,8 @@ void SoPlane::draw(const GsMat& tr, const GsMat& pr, const GsLight& l)
 	if (sh<0.001f) sh = 64;
 
 	glUseProgram(_proggouraud.id);
+	glBindVertexArray(va[0]);
+	glBindTexture(GL_TEXTURE_2D, _texid);
 	glUniformMatrix4fv(_proggouraud.uniloc[0], 1, GL_FALSE, tr.e);
 	glUniformMatrix4fv(_proggouraud.uniloc[1], 1, GL_FALSE, pr.e);
 	glUniform3fv(_proggouraud.uniloc[2], 1, l.pos.e);
@@ -101,6 +133,7 @@ void SoPlane::draw(const GsMat& tr, const GsMat& pr, const GsLight& l)
 	glUniform4fv(_proggouraud.uniloc[4], 1, l.dif.get(f));
 	glUniform4fv(_proggouraud.uniloc[5], 1, l.spe.get(f));
 	glUniform4fv(_proggouraud.uniloc[6], 1, _mtl.ambient.get(f));
+	//glUniform4fv(_proggouraud.uniloc[7], 1, _mtl.diffuse.get(f));
 	glUniform4fv(_proggouraud.uniloc[7], 1, _mtl.specular.get(f));
 	glUniform1fv(_proggouraud.uniloc[8], 1, &sh);
 

@@ -62,6 +62,7 @@ class AppWindow : public GlutWindow
     virtual void glutDisplay ();
     virtual void glutReshape ( int w, int h );
 	virtual void loadCameraCurve();
+	void AppWindow::translation(GsMat &transform, float x, float y, float z);
  };
 
 #endif // APP_WINDOW_H
