@@ -61,6 +61,7 @@ void AppWindow::initPrograms ()
    _house2.init("../models/House_2.png");
    _house3.init("../models/House_3.png");
    _house4.init("../models/House_4.png");
+   _cloud.init();
 
    _ground.init("../models/Ground.png");
 
@@ -89,13 +90,14 @@ static void printInfo ( GsModel& m )
 void AppWindow::loadModel ( int model )
  {
    float f;
-   GsString file1, file2, file3, file4, file5;
+   GsString file1, file2, file3, file4, file5, file6;
    f = 0.4f; 
    file1 = "../models/Bridges.obj";
    file2 = "../models/House_1.obj";
    file3 = "../models/House_2.obj";
    file4 = "../models/House_3.obj";
    file5 = "../models/House_4.obj";
+   file6 = "../models/cloud.obj";
    
    //std::cout << "Loading "<< file1 << "...\n";
    if (!_gsm1.load(file1)) std::cout << "Error!\n";
@@ -126,6 +128,12 @@ void AppWindow::loadModel ( int model )
    //printInfo(_gsm5);
    _gsm5.scale(f); // to fit our camera space
    _house4.build(_gsm5);
+
+   //std::cout << "Loading " << file6 << "...\n";
+   if (!_gsm6.load(file6)) std::cout << "Error!\n";
+   //printInfo(_gsm6);
+   _gsm6.scale(f); // to fit our camera space
+   _cloud.build(_gsm6);
    
    _lines.build(_house2.NL, GsColor::red);
 
@@ -153,11 +161,13 @@ void AppWindow::glutKeyboard ( unsigned char key, int x, int y )
 				 _gsm3.smooth(GS_TORAD(35));
 				 _gsm4.smooth(GS_TORAD(35));
 				 _gsm5.smooth(GS_TORAD(35));
+				 _gsm6.smooth(GS_TORAD(35));
                  _bridge.build(_gsm1);
 				 _house1.build(_gsm2);
 				 _house2.build(_gsm3);
 				 _house3.build(_gsm4);
 				 _house4.build(_gsm5);
+				 _cloud.build(_gsm6);
                  redraw(); 
                  break;
       case 'f' : std::cout<<"Flat normals...\n";
@@ -166,13 +176,16 @@ void AppWindow::glutKeyboard ( unsigned char key, int x, int y )
 				_gsm3.flat();
 				_gsm4.flat();
 				_gsm5.flat();
+				_gsm6.flat();
 				_bridge.build(_gsm1);
 				_house1.build(_gsm2);
 				_house2.build(_gsm3);
 				_house3.build(_gsm4);
 				_house4.build(_gsm5);
+				_cloud.build(_gsm6);
                  redraw(); 
                  break;
+				 /* I don't think we should keep this functionality
       case 'p' : if ( !_bridge.phong() )
                   { std::cout<<"Switching to phong shader...\n";
                     _bridge.phong(true);
@@ -180,6 +193,7 @@ void AppWindow::glutKeyboard ( unsigned char key, int x, int y )
 					_house2.phong(true);
 					_house3.phong(true);
 					_house4.phong(true);
+					_cloud.phong(true);
                   }
                  redraw(); 
                  break;
@@ -193,7 +207,7 @@ void AppWindow::glutKeyboard ( unsigned char key, int x, int y )
                   }
                  redraw(); 
                  break;
-
+				 */
 	  case 'i': ty += 0.05f; redraw(); break;
 	  case 'k': ty -= 0.05f; redraw(); break;
 	  case 'j': tx -= 0.05f; redraw(); break;
@@ -319,6 +333,7 @@ void AppWindow::glutDisplay ()
    _house2.draw(stransf*_transHouse2, sproj, _light);
    _house3.draw(stransf*_transHouse3, sproj, _light);
    _house4.draw(stransf*_transHouse4*_rotHouse4, sproj, _light);
+   _cloud.draw(stransf, sproj, _light);
    //_lines.draw(stransf, sproj);
    _ground.draw(stransf, sproj, _light);
 

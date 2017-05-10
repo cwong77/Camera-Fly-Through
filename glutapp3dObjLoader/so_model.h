@@ -24,8 +24,8 @@
 // Scene object axis:
 class SoModel : public GlObjects
  { private :
-    GlShader _vshtex, _fshtex;
-	GlProgram _progtex;
+    GlShader _vshtex, _fshtex, _vshphong, _fshphong;
+	GlProgram _progtex, _progphong;
 
 	GLuint _texid;
 
@@ -44,7 +44,8 @@ class SoModel : public GlObjects
     SoModel ();
     void phong ( bool b ) { _phong=b; }
     bool phong () const { return _phong; }
-    void init (std::string _path);
+	void init();
+	void init (std::string _path);
     void build ( GsModel& m );
     void draw ( const GsMat& tr, const GsMat& pr, const GsLight& l );
  };
