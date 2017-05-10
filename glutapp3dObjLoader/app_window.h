@@ -35,6 +35,9 @@ class AppWindow : public GlutWindow
     GsLight _light;
 	float tx, ty, tz;
 
+	GsMat _transBridge, _transHouse1, _transHouse2, _transHouse3, _transHouse4;
+	GsMat _rotBridge, _rotHouse1, _rotHouse2, _rotHouse3, _rotHouse4;
+
 	SoLines _lines;
 
 	CurveEval _cameraPath;
@@ -63,6 +66,7 @@ class AppWindow : public GlutWindow
     virtual void glutReshape ( int w, int h );
 	virtual void loadCameraCurve();
 	void AppWindow::translation(GsMat &transform, float x, float y, float z);
+	void AppWindow::rotation(GsMat &rotate, float theta);
  };
 
 #endif // APP_WINDOW_H
