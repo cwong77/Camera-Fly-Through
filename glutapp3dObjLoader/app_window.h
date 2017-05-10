@@ -31,7 +31,7 @@ class AppWindow : public GlutWindow
 
     // Scene data:
     bool  _viewaxis = false;
-    GsModel _gsm1, _gsm2, _gsm3, _gsm4, _gsm5, _gsm6;
+    GsModel _gsm1, _gsm2, _gsm3, _gsm4, _gsm5, _gsm7;
     GsLight _light;
 	float tx, ty, tz;
 

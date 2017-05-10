@@ -90,14 +90,14 @@ static void printInfo ( GsModel& m )
 void AppWindow::loadModel ( int model )
  {
    float f;
-   GsString file1, file2, file3, file4, file5, file6;
+   GsString file1, file2, file3, file4, file5, file7;
    f = 0.4f; 
    file1 = "../models/Bridges.obj";
    file2 = "../models/House_1.obj";
    file3 = "../models/House_2.obj";
    file4 = "../models/House_3.obj";
    file5 = "../models/House_4.obj";
-   file6 = "../models/cloud.obj";
+   file7 = "../models/cloud.obj";
    
    //std::cout << "Loading "<< file1 << "...\n";
    if (!_gsm1.load(file1)) std::cout << "Error!\n";
@@ -130,10 +130,10 @@ void AppWindow::loadModel ( int model )
    _house4.build(_gsm5);
 
    //std::cout << "Loading " << file6 << "...\n";
-   if (!_gsm6.load(file6)) std::cout << "Error!\n";
+   if (!_gsm7.load(file7)) std::cout << "Error!\n";
    //printInfo(_gsm6);
-   _gsm6.scale(f); // to fit our camera space
-   _cloud.build(_gsm6);
+   _gsm7.scale(f); // to fit our camera space
+   _cloud.build(_gsm7);
    
    _lines.build(_house2.NL, GsColor::red);
 
@@ -161,13 +161,13 @@ void AppWindow::glutKeyboard ( unsigned char key, int x, int y )
 				 _gsm3.smooth(GS_TORAD(35));
 				 _gsm4.smooth(GS_TORAD(35));
 				 _gsm5.smooth(GS_TORAD(35));
-				 _gsm6.smooth(GS_TORAD(35));
+				 _gsm7.smooth(GS_TORAD(35));
                  _bridge.build(_gsm1);
 				 _house1.build(_gsm2);
 				 _house2.build(_gsm3);
 				 _house3.build(_gsm4);
 				 _house4.build(_gsm5);
-				 _cloud.build(_gsm6);
+				 _cloud.build(_gsm7);
                  redraw(); 
                  break;
       case 'f' : std::cout<<"Flat normals...\n";
@@ -176,13 +176,13 @@ void AppWindow::glutKeyboard ( unsigned char key, int x, int y )
 				_gsm3.flat();
 				_gsm4.flat();
 				_gsm5.flat();
-				_gsm6.flat();
+				_gsm7.flat();
 				_bridge.build(_gsm1);
 				_house1.build(_gsm2);
 				_house2.build(_gsm3);
 				_house3.build(_gsm4);
 				_house4.build(_gsm5);
-				_cloud.build(_gsm6);
+				_cloud.build(_gsm7);
                  redraw(); 
                  break;
 				 /* I don't think we should keep this functionality
