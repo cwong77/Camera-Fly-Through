@@ -1,4 +1,4 @@
-
+#define PI 3.1419526
 # include <iostream>
 # include <gsim/gs.h>
 # include "app_window.h"
@@ -15,6 +15,9 @@ AppWindow::AppWindow ( const char* label, int x, int y, int w, int h )
    _roty = 0;
    _w = w;
    _h = h;
+   degrees = 0;
+   rotatey(rotd, degrees);
+   translation(transd, -.05*cos(degrees), 0, .05*sin(degrees));
    //tx = ty = 0.0f;
    //tz = 2.0f;
  }
@@ -60,7 +63,7 @@ void AppWindow::initPrograms ()
    _house2.init("../models/House_2.png");
    _house3.init("../models/House_3.png");
    _house4.init("../models/House_4.png");
-
+   _door1.init("../models/Porta_casa.png");
    _ground.init("../models/Ground.png");
 
    // set light:
@@ -68,7 +71,7 @@ void AppWindow::initPrograms ()
 
    _lines.init();	//normal lines for testing purposes
    loadCameraCurve();	//initializes the camera with a curve to follow
-
+   rotd.identity();
    _lines.build(_house1.NL, GsColor::red);
 
    // Load demo model:
@@ -88,13 +91,14 @@ static void printInfo ( GsModel& m )
 void AppWindow::loadModel ( int model )
  {
    float f;
-   GsString file1, file2, file3, file4, file5;
+   GsString file1, file2, file3, file4, file5, file6;
    f = 0.1f; 
    file1 = "../models/Bridges.obj";
    file2 = "../models/House_1.obj";
    file3 = "../models/House_2.obj";
    file4 = "../models/House_3.obj";
    file5 = "../models/House_4.obj";
+   file6 = "../models/Door.obj";
    /*
    //std::cout << "Loading "<< file1 << "...\n";
    if (!_gsm1.load(file1)) std::cout << "Error!\n";
@@ -109,10 +113,10 @@ void AppWindow::loadModel ( int model )
    //_house1.build(_gsm2);
    
    //std::cout << "Loading " << file3 << "...\n";
-   if (!_gsm3.load(file3)) std::cout << "Error!\n";
+   //if (!_gsm3.load(file3)) std::cout << "Error!\n";
    //printInfo(_gsm3);
-   _gsm3.scale(f); // to fit our camera space
-   _house2.build(_gsm3);
+   //_gsm3.scale(f); // to fit our camera space
+   //_house2.build(_gsm3);
    /*
    //std::cout << "Loading " << file4 << "...\n";
    if (!_gsm4.load(file4)) std::cout << "Error!\n";
@@ -126,8 +130,13 @@ void AppWindow::loadModel ( int model )
    _gsm5.scale(f); // to fit our camera space
    _house4.build(_gsm5);
    */
+   //std::cout << "Loading " << file5 << "...\n";
+   if (!_gsm6.load(file6)) std::cout << "Error!\n";
+   //printInfo(_gsm5);
+   _gsm6.scale(.01f); // to fit our camera space
+   _door1.build(_gsm6);
 
-   _lines.build(_house2.NL, GsColor::red);
+   //_lines.build(_house2.NL, GsColor::red);
 
    redraw();
  }
@@ -147,6 +156,18 @@ void AppWindow::glutKeyboard ( unsigned char key, int x, int y )
    switch ( key )
     { case ' ': _viewaxis = !_viewaxis; redraw(); break;
 	  case 27 : exit(1); // Esc was pressed
+	  case 'q': degrees+=5;
+		  rotatey(rotd, degrees);
+		  theta = degrees * PI / 180;
+		  translation(transd, -.05*cos(theta), 0, .05*sin(theta));
+		  redraw();
+		  break;
+	  case 'a': degrees -= 5;
+		  rotatey(rotd, degrees);
+		  theta = degrees * PI / 180;
+		  translation(transd, -.05*cos(theta), 0, .05*sin(theta));
+		  redraw();
+		  break;
       case 's' : std::cout<<"Smoothing normals...\n";
                  _gsm1.smooth (GS_TORAD(35));
 				 _gsm2.smooth(GS_TORAD(35));
@@ -302,11 +323,13 @@ void AppWindow::glutDisplay ()
    // Draw:
    if ( _viewaxis ) _axis.draw ( stransf, sproj );
 
-   _bridge.draw ( stransf, sproj, _light );
-   _house1.draw(stransf, sproj, _light);
-   _house2.draw(stransf, sproj, _light);
-   _house3.draw(stransf, sproj, _light);
-   _house4.draw(stransf, sproj, _light);
+  // _bridge.draw ( stransf, sproj, _light );
+   //_house1.draw(stransf, sproj, _light);
+   //_house2.draw(stransf, sproj, _light);
+   //_house3.draw(stransf, sproj, _light);
+   //_house4.draw(stransf, sproj, _light);
+   //translation(location, .05, .03, .04);
+   _door1.draw(stransf*location*transd*rotd, sproj, _light);
    //_lines.draw(stransf, sproj);
    _ground.draw(stransf, sproj, _light);
 
@@ -321,4 +344,12 @@ void AppWindow::translation(GsMat &translate, float x, float y, float z)
 	translate.setl2(0.0f, 1.0f, 0.0f, y);
 	translate.setl3(0.0f, 0.0f, 1.0f, z);
 	translate.setl4(0.0f, 0.0f, 0.0f, 1.0f);
+}
+void AppWindow::rotatey(GsMat &rotatey, int degrees)
+{
+	float thetay = degrees* PI / 180;
+	rotatey.setl1(cos(thetay),0.0f,sin(thetay),0.0f);
+	rotatey.setl2(0.0f,1.0f,0.0f,0.0f);
+	rotatey.setl3(-sin(thetay),0.0f,cos(thetay),0.0f);
+	rotatey.setl4(0.0f, 0.0f, 0.0f, 1.0f);
 }

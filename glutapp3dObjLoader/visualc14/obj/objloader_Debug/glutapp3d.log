@@ -1,1 +1,9 @@
-﻿
+﻿  app_window.cpp
+c:\users\roman wong\documents\cse 170\camera-fly-through\glutapp3dobjloader\app_window.cpp(20): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+c:\users\roman wong\documents\cse 170\camera-fly-through\glutapp3dobjloader\app_window.cpp(161): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\roman wong\documents\cse 170\camera-fly-through\glutapp3dobjloader\app_window.cpp(162): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+c:\users\roman wong\documents\cse 170\camera-fly-through\glutapp3dobjloader\app_window.cpp(167): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\roman wong\documents\cse 170\camera-fly-through\glutapp3dobjloader\app_window.cpp(168): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+c:\users\roman wong\documents\cse 170\camera-fly-through\glutapp3dobjloader\app_window.cpp(350): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+  glutapp3d.vcxproj -> C:\Users\Roman Wong\Documents\CSE 170\Camera-Fly-Through\glutapp3dObjLoader\visualc14\obj\objloader_Debug\objloader.exe
+  glutapp3d.vcxproj -> obj\objloader_Debug\objloader.pdb (Full PDB)
