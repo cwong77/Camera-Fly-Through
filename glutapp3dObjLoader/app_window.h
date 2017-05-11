@@ -29,7 +29,8 @@ class AppWindow : public GlutWindow
     // My scene objects:
     SoAxis _axis;
 
-    SoModel _bridge, _house1, _house2, _house3, _house4, _door1;
+
+    SoModel _bridge, _house1, _house2, _house3, _house4, _door1, _balloon, _house5;
 
 	SoPlane _ground;
 
@@ -43,12 +44,12 @@ class AppWindow : public GlutWindow
 
     bool  _viewaxis = false;
 
-    GsModel _gsm1, _gsm2, _gsm3, _gsm4, _gsm5,_gsm6,_gsm7;
+    GsModel _gsm1, _gsm2, _gsm3, _gsm4, _gsm5,_gsm6,_gsm7,_gsm8;
 
     GsLight _light;
 	float tx, ty, tz;
 
-	GsMat _transBridge, _transHouse1, _transHouse2, _transHouse3, _transHouse4;
+	GsMat _transBridge, _transHouse1, _transHouse2, _transHouse3, _transHouse4, _transballoon;
 	GsMat _rotBridge, _rotHouse1, _rotHouse2, _rotHouse3, _rotHouse4;
 
 	SoLines _lines;
@@ -89,7 +90,9 @@ class AppWindow : public GlutWindow
 
 	void AppWindow::rotatey(GsMat &rotatey, int degrees);
 
-	void AppWindow::rotation(GsMat &rotate, float theta);
+	void AppWindow::rotationy(GsMat &rotate, float theta);
+	void AppWindow::rotationx(GsMat &rotate, float theta);
+	void AppWindow::rotationz(GsMat &rotate, float theta);
 
  };
 
