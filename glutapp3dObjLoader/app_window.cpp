@@ -105,7 +105,7 @@ void AppWindow::loadModel ( int model )
    file5 = "../models/House_4.obj";
    file6 = "../models/Door.obj";
    file7 = "../models/Hot_Air_Balloon.obj";
-   file8 = "../models/house.obj";
+   file8 = "../models/Tower-House Design.obj";
 
    
 
