@@ -47,7 +47,7 @@ class AppWindow : public GlutWindow
     GsModel _gsm1, _gsm2, _gsm3, _gsm4, _gsm5,_gsm6,_gsm7,_gsm8;
 
     GsLight _light;
-	float tx, ty, tz;
+	float tx = 0, ty = 0, tz = 0;
 
 	GsMat _transBridge, _transHouse1, _transHouse2, _transHouse3, _transHouse4, _transHouse5, _transballoon, _transskytop, _transskyfront, _transskyback, _transskyleft, _transskyright,_transurprise;
 	GsMat _rotBridge, _rotHouse1, _rotHouse2, _rotHouse3, _rotHouse4, _rotskyfront, _rotskyback, _rotskyleft, _rotskyright;
@@ -80,6 +80,7 @@ class AppWindow : public GlutWindow
 	bool rotateCam = false;												//whether or not to rotate camera
 	float parameter = 0;												//this is for rotating camera by parameter
 	bool pause = true;
+	int look = 0;
     
     // App data:
     enum MenuEv { evOption0, evOption1 };

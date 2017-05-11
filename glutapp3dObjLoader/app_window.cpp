@@ -32,8 +32,7 @@ void AppWindow::loadCameraCurve() {
 						NOT HEAVILY TESTED SO CALL ME IF IT DOESN'T WORK
 						CAMERA ONLY LOOKS FORWARD
 	*****************************************/
-	//starting point
-	
+
 	_cameraControlPoints.push(GsVec(5.0, 0.25, -2.0));
 	_cameraControlPoints.push(GsVec(3.00, .5, -2.0));
 	_cameraControlPoints.push(GsVec(2.5, .5, -2.0));
@@ -41,18 +40,21 @@ void AppWindow::loadCameraCurve() {
 	_cameraControlPoints.push(GsVec(-1.0, .5, -2.0));
 	_cameraControlPoints.push(GsVec(-1.0, .5, 1.0));
 	_cameraControlPoints.push(GsVec(-1.0, .5, 2.0));
-	
+
 	_cameraControlPoints.push(GsVec(-2.0, .5, 2.0));
 	_cameraControlPoints.push(GsVec(-4.0, .01, 2.0));
 	_cameraControlPoints.push(GsVec(-3.0, .05, 1.5));
 	_cameraControlPoints.push(GsVec(-2.3, .05, .75));
+	
 	//second floor
 	_cameraControlPoints.push(GsVec(-2.3, .35, 1.9));
 	_cameraControlPoints.push(GsVec(-2.2, .35, 1.9));
 
 	_cameraControlPoints.push(GsVec(-1.7, .35, 1.9));
 	_cameraControlPoints.push(GsVec(-1.6, .35, 1.9));
+
 	//out the second door
+	
 	_cameraControlPoints.push(GsVec(-1.7, .35, 1.4));
 	_cameraControlPoints.push(GsVec(-1.7, .35, 1.2));
 	_cameraControlPoints.push(GsVec(-1.63, .35, 1.2));
@@ -82,6 +84,7 @@ void AppWindow::loadCameraCurve() {
 	_cameraControlPoints.push(GsVec(-1.7, 2.0, 3.0));
 	_cameraControlPoints.push(GsVec(-1.5, 1.5, 3.5));
 	_cameraControlPoints.push(GsVec(-1.5, 1.5, 4.0));
+
 	
 	//tower
 	_cameraControlPoints.push(GsVec(-1.5, 2.5, 4.0));
@@ -91,9 +94,12 @@ void AppWindow::loadCameraCurve() {
 	GsVec a = GsVec(-4.0, 2.5, 4.2); GsVec b = GsVec(-1.0, 4.0, 0.0);
 	GsVec c = a+((b - a) / 15) ;
 	_cameraControlPoints.push(c);
+	c = a + ((b - a) / 10);
+	_cameraControlPoints.push(c);
 	_cameraControlPoints.push(GsVec(-1.0, 4.0, 0.0));
 	_cameraControlPoints.push(GsVec(-1.0, -1.0, 0.0));
 	_cameraControlPoints.push(GsVec(-1.0, -10.0, 0.0));
+
 
 	/***************************************************************/
 
@@ -320,47 +326,27 @@ void AppWindow::glutKeyboard ( unsigned char key, int x, int y )
 				 */
 	  case 'i': ty += 0.05f; redraw(); break;
 	  case 'k': ty -= 0.05f; redraw(); break;
-	  case 'j': tx -= 0.05f; redraw(); break;
-	  case 'l': tx += 0.05f; redraw(); break;
-	  case '7': tz -= 0.05f; redraw(); break;
+	  case 'j': tx -= 0.05f; redraw(); /*std::cout << "tx: " << tx << std::endl;*/ break;
+	  //case 'l': tx += 0.05f; redraw(); break; 
+	  case '7': tz -= 0.05f; redraw(); /*std::cout << "tz: " << tz << std::endl;*/ break;
 	  case '8': tz += 0.05f; redraw(); break;
 
 	  case 'n': 
-		  /*****************Hold n (or whatever button you want to use) down***********************/
-		  /*****************Don't know how to get it to loop because it only redraws at the end****/
-		  //for (int i = 0; i < _cameraInterpolation.size(); ++i) {
-			  //std::cout << "moving\n";
-			  //cam.move();
-			  //redraw();
-		  //}
 		  moveCamera = true;
 		  break;
 		
-	  //pause curve movement and look around
+	  //look around
 	  case 'r':
-		  //musicplayer.raiseVolume();
-		  /*
-		  for (float i = 0; i < 2 * PI; i += interval) {
-			  cam.rotate(i);
-			  redraw();
-		  }
-		  */
-		  
-		  moveCamera = false;	//pause camera movement
 		  rotateCam = true;		//start rotating
-
-		  /*
-		  std::cout << "b4 parameter: " << parameter << std::endl;
-		  parameter += interval;
-		  std::cout << "after parameter: " << parameter << std::endl;
-
-		  cam.rotate(parameter);
-		  redraw();
-		  */
 		  break;
 		  
 	  case 'p':
 		  pause = !pause;
+		  break;
+
+	  case 'l':
+		  if (++look > 2)
+			  look = 0;
 		  break;
 
       default : loadModel ( int(key-'0') );
@@ -389,7 +375,12 @@ void AppWindow::glutIdle() {
 	fly(_fly, _flyInterpolation[flyIndex++]);
 
 	//camera stuff
-	//cam.observe(_flyInterpolation[flyIndex]);
+
+	if(look == 1)
+		cam.observe(_flyInterpolation[flyIndex]);
+	else if (look == 2)
+		cam.observe(_flyInterpolation2[flyIndex2]);
+
 	
 	if (moveCamera && !pause) {
 		cam.move();
@@ -530,6 +521,7 @@ void AppWindow::glutDisplay ()
    translation(_transskyback, 0.0f, 0.0f, -10.0f);
    translation(_transskyleft, 10.0f, 0.0f, 0.0f);
    translation(_transskyright, -10.0f, 0.0f, 0.0f);
+   translation(location, -1.63f, .325f, 1.55f);
 
    //Make all the rotations
    rotationx(_rotskyfront, PI / 2);
@@ -541,7 +533,12 @@ void AppWindow::glutDisplay ()
    rotationz(_rotskyright, PI / 2);
 
    // Draw:
-   if (_viewaxis) _axis.draw(stransf, sproj);
+   if (_viewaxis) {
+	   _axis.draw(stransf, sproj);
+	   _flyVisualization.draw(stransf, sproj);
+	   _flyVisualization2.draw(stransf, sproj);
+	   _curveVisualization.draw(stransf, sproj);
+   }
 
    _bridge.draw(stransf*_transBridge*_rotBridge, sproj, _light);
    _house1.draw(stransf*_transHouse1*_rotHouse1, sproj, _light);
@@ -554,9 +551,7 @@ void AppWindow::glutDisplay ()
    _house5.draw(stransf*_transHouse5, sproj, _light);
 
    //_lines.draw(stransf, sproj);
-   _flyVisualization.draw(stransf, sproj);
-   _flyVisualization2.draw(stransf, sproj);
-	_curveVisualization.draw(stransf, sproj);
+  
    _ground.draw(stransf, sproj, _light);
    _surprise.draw(stransf*_transurprise, sproj, _light);
    _skytop.draw(stransf*_transskytop, sproj, _light);
