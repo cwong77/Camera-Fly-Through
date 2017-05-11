@@ -65,6 +65,7 @@ void AppWindow::initPrograms ()
    _house3.init("../models/House_3.png");
    _house4.init("../models/House_4.png");
    _door1.init("../models/Porta_casa.png");
+   _house5.init();
    _balloon.init("../models/Stone_Brushed_Khaki.png");
 
    _ground.init("../models/Ground.png");
@@ -95,7 +96,7 @@ void AppWindow::loadModel ( int model )
  {
    float f;
 
-   GsString file1, file2, file3, file4, file5, file6, file7;
+   GsString file1, file2, file3, file4, file5, file6, file7, file8;
    f = 0.4f; 
    file1 = "../models/Bridges.obj";
    file2 = "../models/House_1.obj";
@@ -104,6 +105,7 @@ void AppWindow::loadModel ( int model )
    file5 = "../models/House_4.obj";
    file6 = "../models/Door.obj";
    file7 = "../models/Hot_Air_Balloon.obj";
+   file8 = "../models/house.obj";
 
    
 
@@ -147,7 +149,12 @@ void AppWindow::loadModel ( int model )
    //printInfo(_gsm6);
    _gsm7.scale(.001f); // to fit our camera space
    _balloon.build(_gsm7);
-   
+
+   if (!_gsm8.load(file8)) std::cout << "Error!\n";
+   //printInfo(_gsm6);
+   _gsm8.scale(.1f); // to fit our camera space
+   _house5.build(_gsm8);
+
    _lines.build(_house2.NL, GsColor::red);
 
    redraw();
@@ -363,6 +370,7 @@ void AppWindow::glutDisplay ()
    _house4.draw(stransf*_transHouse4*_rotHouse4, sproj, _light);
    _balloon.draw(stransf*_transballoon, sproj, _light);
    _door1.draw(stransf*location*transd*rotd, sproj, _light);
+   _house5.draw(stransf, sproj, _light);
 
 
    //_lines.draw(stransf, sproj);

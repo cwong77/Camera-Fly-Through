@@ -6,7 +6,7 @@ SoModel::SoModel()
    _numpoints = 0;
    _phong = false;
  }
-/*
+
 void SoModel::init()
 {
 	_vshphong.load_and_compile(GL_VERTEX_SHADER, "../mcol_phong.vert");
@@ -32,7 +32,7 @@ void SoModel::init()
 	_phong = true;
 
 }
-*/
+
 void SoModel::init (std::string _path)
  {
    _vshtex.load_and_compile ( GL_VERTEX_SHADER, "../texgouraud.vert" );
@@ -110,13 +110,15 @@ void SoModel::build ( GsModel& m )
        { GsVec n=m.N[i]; N.push()=n; N.push()=n; N.push()=n; }
       else
        { GsVec n=m.face_normal(i); N.push()=n; N.push()=n; N.push()=n; }
-
-	  if (m.Ft.size() > 0 && i < m.Ft.size()) {
-		  GsModel::Face& f = m.Ft[i];
-		  T.push() = m.T[f.a]; T.push() = m.T[f.b]; T.push() = m.T[f.c];
+	  if (!_phong)
+	  {
+		  if (m.Ft.size() > 0 && i < m.Ft.size()) {
+			  GsModel::Face& f = m.Ft[i];
+			  T.push() = m.T[f.a]; T.push() = m.T[f.b]; T.push() = m.T[f.c];
+		  }
 	  }
-	  
       c = GsColor::white;
+
       if ( m.Fm.size()>0 && i<m.Fm.size() ) 
        { int id=m.Fm[i]; 
          if (id<0) { if (C.size()>0)c=C.top(); } else c=m.M[id].diffuse;
@@ -127,6 +129,8 @@ void SoModel::build ( GsModel& m )
       C.push()=c; C.push()=c; C.push()=c;
 	  
     }
+   C.size(P.size());
+   C.setall(GsColor::white);
    //for (int i = 0; i < N.size(); ++i) {
 	//   std::cout << N[i] << std::endl;
 //   }
@@ -165,9 +169,16 @@ void SoModel::build ( GsModel& m )
     glBufferData(GL_ARRAY_BUFFER, 3 * sizeof(float)*N.size(), N.pt(), GL_STATIC_DRAW);
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
-    glBindBuffer(GL_ARRAY_BUFFER, buf[2]);
-    glBufferData(GL_ARRAY_BUFFER, 2*sizeof(float)*T.size(), T.pt(), GL_STATIC_DRAW);
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, 0);
+	if (!_phong) {
+		glBindBuffer(GL_ARRAY_BUFFER, buf[2]);
+		glBufferData(GL_ARRAY_BUFFER, 2 * sizeof(float)*T.size(), T.pt(), GL_STATIC_DRAW);
+		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, 0);
+	}
+	else {
+		glBindBuffer(GL_ARRAY_BUFFER, buf[2]);
+		glBufferData(GL_ARRAY_BUFFER, 4 * sizeof(gsbyte)*C.size(), C.pt(), GL_STATIC_DRAW);
+		glVertexAttribPointer(2, 4, GL_UNSIGNED_BYTE, GL_FALSE, 0, 0);
+	}
 
    glBindVertexArray(0); // break the existing vertex array object binding.
 
@@ -185,7 +196,7 @@ void SoModel::draw ( const GsMat& tr, const GsMat& pr, const GsLight& l )
 	float f[4];
 	float sh = (float)_mtl.shininess;
 	if (sh<0.001f) sh = 64;
-	//if (!_phong) {
+	if (!_phong) {
 		glUseProgram(_progtex.id);
 		glBindVertexArray(va[0]);
 		glBindTexture(GL_TEXTURE_2D, _texid);
@@ -199,8 +210,8 @@ void SoModel::draw ( const GsMat& tr, const GsMat& pr, const GsLight& l )
 		//glUniform4fv(_progtex.uniloc[7], 1, _mtl.diffuse.get(f));
 		glUniform4fv(_progtex.uniloc[7], 1, _mtl.specular.get(f));
 		glUniform1fv(_progtex.uniloc[8], 1, &sh);
-	//}
-	/*
+	}
+	
 	else {
 		glUseProgram(_progphong.id);
 		glBindVertexArray(va[0]);
@@ -215,7 +226,7 @@ void SoModel::draw ( const GsMat& tr, const GsMat& pr, const GsLight& l )
 		glUniform4fv(_progphong.uniloc[7], 1, _mtl.specular.get(f));
 		glUniform1fv(_progphong.uniloc[8], 1, &sh);
 	}
-	*/
+	
     glBindVertexArray ( va[0] );
 	glDrawArrays(GL_TRIANGLES, 0, _numpoints);
 	glBindVertexArray(0); // break the existing vertex array object binding.

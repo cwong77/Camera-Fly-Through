@@ -26,7 +26,7 @@ class AppWindow : public GlutWindow
     // My scene objects:
     SoAxis _axis;
 
-    SoModel _bridge, _house1, _house2, _house3, _house4, _door1, _balloon;
+    SoModel _bridge, _house1, _house2, _house3, _house4, _door1, _balloon, _house5;
 
 	SoPlane _ground;
 	Camera cam;
@@ -37,7 +37,7 @@ class AppWindow : public GlutWindow
     // Scene data:
     bool  _viewaxis = false;
 
-    GsModel _gsm1, _gsm2, _gsm3, _gsm4, _gsm5,_gsm6,_gsm7;
+    GsModel _gsm1, _gsm2, _gsm3, _gsm4, _gsm5,_gsm6,_gsm7,_gsm8;
 
     GsLight _light;
 	float tx, ty, tz;
