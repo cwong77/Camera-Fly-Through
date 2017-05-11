@@ -80,6 +80,7 @@ class AppWindow : public GlutWindow
 	bool rotateCam = false;												//whether or not to rotate camera
 	float parameter = 0;												//this is for rotating camera by parameter
 	bool pause = true;
+	int look = 0;
     
     // App data:
     enum MenuEv { evOption0, evOption1 };

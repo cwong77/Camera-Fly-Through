@@ -346,7 +346,7 @@ void AppWindow::glutKeyboard ( unsigned char key, int x, int y )
 	  case 'i': ty += 0.05f; redraw(); break;
 	  case 'k': ty -= 0.05f; redraw(); break;
 	  case 'j': tx -= 0.05f; redraw(); /*std::cout << "tx: " << tx << std::endl;*/ break;
-	  case 'l': tx += 0.05f; redraw(); break; 
+	  //case 'l': tx += 0.05f; redraw(); break; 
 	  case '7': tz -= 0.05f; redraw(); /*std::cout << "tz: " << tz << std::endl;*/ break;
 	  case '8': tz += 0.05f; redraw(); break;
 
@@ -371,7 +371,7 @@ void AppWindow::glutKeyboard ( unsigned char key, int x, int y )
 		  }
 		  */
 		  
-		  moveCamera = false;	//pause camera movement
+		  //moveCamera = false;	//pause camera movement
 		  rotateCam = true;		//start rotating
 
 		  /*
@@ -386,6 +386,11 @@ void AppWindow::glutKeyboard ( unsigned char key, int x, int y )
 		  
 	  case 'p':
 		  pause = !pause;
+		  break;
+
+	  case 'l':
+		  if (++look >= 3)
+			  look = 0;
 		  break;
 
       default : loadModel ( int(key-'0') );
@@ -414,7 +419,10 @@ void AppWindow::glutIdle() {
 	fly(_fly, _flyInterpolation[flyIndex++]);
 
 	//camera stuff
-	//cam.observe(_flyInterpolation[flyIndex]);
+	if(look == 1)
+		cam.observe(_flyInterpolation[flyIndex]);
+	else if (look == 2)
+		cam.observe(_flyInterpolation2[flyIndex2]);
 	
 	if (moveCamera && !pause) {
 		cam.move();
