@@ -26,7 +26,7 @@ class AppWindow : public GlutWindow
     // My scene objects:
     SoAxis _axis;
 
-    SoModel _bridge, _house1, _house2, _house3, _house4,_door1;
+    SoModel _bridge, _house1, _house2, _house3, _house4, _door1, _balloon;
 
 	SoPlane _ground;
 	Camera cam;
@@ -42,7 +42,7 @@ class AppWindow : public GlutWindow
     GsLight _light;
 	float tx, ty, tz;
 
-	GsMat _transBridge, _transHouse1, _transHouse2, _transHouse3, _transHouse4;
+	GsMat _transBridge, _transHouse1, _transHouse2, _transHouse3, _transHouse4, _transballoon;
 	GsMat _rotBridge, _rotHouse1, _rotHouse2, _rotHouse3, _rotHouse4;
 
 	SoLines _lines;

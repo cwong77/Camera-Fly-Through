@@ -65,6 +65,7 @@ void AppWindow::initPrograms ()
    _house3.init("../models/House_3.png");
    _house4.init("../models/House_4.png");
    _door1.init("../models/Porta_casa.png");
+   _balloon.init("../models/Stone_Brushed_Khaki.png");
 
    _ground.init("../models/Ground.png");
 
@@ -101,8 +102,8 @@ void AppWindow::loadModel ( int model )
    file3 = "../models/House_2.obj";
    file4 = "../models/House_3.obj";
    file5 = "../models/House_4.obj";
-
    file6 = "../models/Door.obj";
+   file7 = "../models/Hot_Air_Balloon.obj";
 
    
 
@@ -124,8 +125,6 @@ void AppWindow::loadModel ( int model )
    _gsm3.scale(f); // to fit our camera space
    _house2.build(_gsm3);
    
-
-
    //std::cout << "Loading " << file4 << "...\n";
    if (!_gsm4.load(file4)) std::cout << "Error!\n";
    //printInfo(_gsm4);
@@ -143,13 +142,11 @@ void AppWindow::loadModel ( int model )
    _gsm6.scale(.01f); // to fit our camera space
    _door1.build(_gsm6);
 
-   //_lines.build(_house2.NL, GsColor::red);
-
    //std::cout << "building cloud " << file7 << "...\n";
-   //if (!_gsm7.load(file7)) std::cout << "Error!\n";
+   if (!_gsm7.load(file7)) std::cout << "Error!\n";
    //printInfo(_gsm6);
-   //_gsm7.scale(f); // to fit our camera space
-   //_cloud.build(_gsm7);
+   _gsm7.scale(.001f); // to fit our camera space
+   _balloon.build(_gsm7);
    
    _lines.build(_house2.NL, GsColor::red);
 
@@ -195,6 +192,7 @@ void AppWindow::glutKeyboard ( unsigned char key, int x, int y )
 				 _house2.build(_gsm3);
 				 _house3.build(_gsm4);
 				 _house4.build(_gsm5);
+				 _balloon.build(_gsm7);
 				 
                  redraw(); 
                  break;
@@ -210,7 +208,8 @@ void AppWindow::glutKeyboard ( unsigned char key, int x, int y )
 				_house2.build(_gsm3);
 				_house3.build(_gsm4);
 				_house4.build(_gsm5);
-				
+				_balloon.build(_gsm7);
+
                  redraw(); 
                  break;
 				 /* I don't think we should keep this functionality
@@ -347,9 +346,7 @@ void AppWindow::glutDisplay ()
    translation(_transHouse2, 0.25f, 0.0f, -3.15f);
    translation(_transHouse3, -2.0f, 0.0f, -3.15f);
    translation(_transHouse4, 0.25f, 0.0f, -0.83f);
-
-
-  
+   translation(_transballoon, 0.0f, 1.0f, 0.0f);
 
    //Make all the rotations
    rotation(_rotBridge, PI);
@@ -364,13 +361,13 @@ void AppWindow::glutDisplay ()
    _house2.draw(stransf*_transHouse2, sproj, _light);
    _house3.draw(stransf*_transHouse3, sproj, _light);
    _house4.draw(stransf*_transHouse4*_rotHouse4, sproj, _light);
-  
-	_door1.draw(stransf*location*transd*rotd, sproj, _light);
+   _balloon.draw(stransf*_transballoon, sproj, _light);
+   _door1.draw(stransf*location*transd*rotd, sproj, _light);
+
+
    //_lines.draw(stransf, sproj);
    _ground.draw(stransf, sproj, _light);
-  std::cout << "IT WORKS!?!?!?!" << std::endl;
-
-  std::cout << "IT WORKS!?!?!?! x2" << std::endl;
+ 
    // Swap buffers and draw:
    glFlush();         // flush the pipeline (usually not necessary)
    glutSwapBuffers(); // we were drawing to the back buffer, now bring it to the front
