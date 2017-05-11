@@ -3,6 +3,7 @@
 # include <gsim/gs.h>
 # include "app_window.h"
 
+
 AppWindow::AppWindow ( const char* label, int x, int y, int w, int h )
           :GlutWindow ( label, x, y, w, h )
  {
@@ -33,7 +34,7 @@ void AppWindow::loadCameraCurve() {
 						CAMERA ONLY LOOKS FORWARD
 	*****************************************/
 	//these are random control points
-	_cameraControlPoints.push(GsVec(1.0, 0.0, 0.0));
+	_cameraControlPoints.push(GsVec(0.0, 0.0, 0.0));
 	_cameraControlPoints.push(GsVec(.75, 0.25, 0.0));
 	_cameraControlPoints.push(GsVec(.5, .5, 0.0));
 	_cameraControlPoints.push(GsVec(.25, .75, 0.0));
@@ -64,6 +65,7 @@ void AppWindow::initPrograms ()
    _house3.init("../models/House_3.png");
    _house4.init("../models/House_4.png");
    _door1.init("../models/Porta_casa.png");
+
    _ground.init("../models/Ground.png");
 
    // set light:
@@ -91,33 +93,39 @@ static void printInfo ( GsModel& m )
 void AppWindow::loadModel ( int model )
  {
    float f;
-   GsString file1, file2, file3, file4, file5, file6;
-   f = 0.1f; 
+
+   GsString file1, file2, file3, file4, file5, file6, file7;
+   f = 0.4f; 
    file1 = "../models/Bridges.obj";
    file2 = "../models/House_1.obj";
    file3 = "../models/House_2.obj";
    file4 = "../models/House_3.obj";
    file5 = "../models/House_4.obj";
+
    file6 = "../models/Door.obj";
-   /*
+
+   
+
    //std::cout << "Loading "<< file1 << "...\n";
    if (!_gsm1.load(file1)) std::cout << "Error!\n";
    //printInfo (_gsm1);
    _gsm1.scale ( f ); // to fit our camera space
    _bridge.build(_gsm1);
-   */
+   
    //std::cout << "Loading " << file2 << "...\n";
-   //if (!_gsm2.load(file2)) std::cout << "Error!\n";
+   if (!_gsm2.load(file2)) std::cout << "Error!\n";
    //printInfo(_gsm2);
-   //_gsm2.scale(f); // to fit our camera space
-   //_house1.build(_gsm2);
+   _gsm2.scale(f); // to fit our camera space
+   _house1.build(_gsm2);
    
    //std::cout << "Loading " << file3 << "...\n";
-   //if (!_gsm3.load(file3)) std::cout << "Error!\n";
+   if (!_gsm3.load(file3)) std::cout << "Error!\n";
    //printInfo(_gsm3);
-   //_gsm3.scale(f); // to fit our camera space
-   //_house2.build(_gsm3);
-   /*
+   _gsm3.scale(f); // to fit our camera space
+   _house2.build(_gsm3);
+   
+
+
    //std::cout << "Loading " << file4 << "...\n";
    if (!_gsm4.load(file4)) std::cout << "Error!\n";
    //printInfo(_gsm4);
@@ -129,7 +137,6 @@ void AppWindow::loadModel ( int model )
    //printInfo(_gsm5);
    _gsm5.scale(f); // to fit our camera space
    _house4.build(_gsm5);
-   */
    //std::cout << "Loading " << file5 << "...\n";
    if (!_gsm6.load(file6)) std::cout << "Error!\n";
    //printInfo(_gsm5);
@@ -137,6 +144,14 @@ void AppWindow::loadModel ( int model )
    _door1.build(_gsm6);
 
    //_lines.build(_house2.NL, GsColor::red);
+
+   //std::cout << "building cloud " << file7 << "...\n";
+   //if (!_gsm7.load(file7)) std::cout << "Error!\n";
+   //printInfo(_gsm6);
+   //_gsm7.scale(f); // to fit our camera space
+   //_cloud.build(_gsm7);
+   
+   _lines.build(_house2.NL, GsColor::red);
 
    redraw();
  }
@@ -174,11 +189,13 @@ void AppWindow::glutKeyboard ( unsigned char key, int x, int y )
 				 _gsm3.smooth(GS_TORAD(35));
 				 _gsm4.smooth(GS_TORAD(35));
 				 _gsm5.smooth(GS_TORAD(35));
+				 _gsm7.smooth(GS_TORAD(35));
                  _bridge.build(_gsm1);
 				 _house1.build(_gsm2);
 				 _house2.build(_gsm3);
 				 _house3.build(_gsm4);
 				 _house4.build(_gsm5);
+				 
                  redraw(); 
                  break;
       case 'f' : std::cout<<"Flat normals...\n";
@@ -187,13 +204,16 @@ void AppWindow::glutKeyboard ( unsigned char key, int x, int y )
 				_gsm3.flat();
 				_gsm4.flat();
 				_gsm5.flat();
+				_gsm7.flat();
 				_bridge.build(_gsm1);
 				_house1.build(_gsm2);
 				_house2.build(_gsm3);
 				_house3.build(_gsm4);
 				_house4.build(_gsm5);
+				
                  redraw(); 
                  break;
+				 /* I don't think we should keep this functionality
       case 'p' : if ( !_bridge.phong() )
                   { std::cout<<"Switching to phong shader...\n";
                     _bridge.phong(true);
@@ -201,6 +221,7 @@ void AppWindow::glutKeyboard ( unsigned char key, int x, int y )
 					_house2.phong(true);
 					_house3.phong(true);
 					_house4.phong(true);
+					_cloud.phong(true);
                   }
                  redraw(); 
                  break;
@@ -214,7 +235,7 @@ void AppWindow::glutKeyboard ( unsigned char key, int x, int y )
                   }
                  redraw(); 
                  break;
-
+				 */
 	  case 'i': ty += 0.05f; redraw(); break;
 	  case 'k': ty -= 0.05f; redraw(); break;
 	  case 'j': tx -= 0.05f; redraw(); break;
@@ -320,19 +341,36 @@ void AppWindow::glutDisplay ()
    //  format, what will cause our values to be transposed, and we will then have in our 
    //  shaders vectors on the left side of a multiplication to a matrix.
 
-   // Draw:
-   if ( _viewaxis ) _axis.draw ( stransf, sproj );
+   //Make all the translations
+   translation(_transBridge, -3.75f, 3.5f, 4.0f);
+   translation(_transHouse1, -2.0f, 0.0f, -0.6f);
+   translation(_transHouse2, 0.25f, 0.0f, -3.15f);
+   translation(_transHouse3, -2.0f, 0.0f, -3.15f);
+   translation(_transHouse4, 0.25f, 0.0f, -0.83f);
 
-  // _bridge.draw ( stransf, sproj, _light );
-   //_house1.draw(stransf, sproj, _light);
-   //_house2.draw(stransf, sproj, _light);
-   //_house3.draw(stransf, sproj, _light);
-   //_house4.draw(stransf, sproj, _light);
-   //translation(location, .05, .03, .04);
-   _door1.draw(stransf*location*transd*rotd, sproj, _light);
+
+  
+
+   //Make all the rotations
+   rotation(_rotBridge, PI);
+   rotation(_rotHouse1, PI);
+   rotation(_rotHouse4, PI);
+
+   // Draw:
+   if (_viewaxis) _axis.draw(stransf, sproj);
+
+   _bridge.draw(stransf*_transBridge*_rotBridge, sproj, _light);
+   _house1.draw(stransf*_transHouse1*_rotHouse1, sproj, _light);
+   _house2.draw(stransf*_transHouse2, sproj, _light);
+   _house3.draw(stransf*_transHouse3, sproj, _light);
+   _house4.draw(stransf*_transHouse4*_rotHouse4, sproj, _light);
+  
+	_door1.draw(stransf*location*transd*rotd, sproj, _light);
    //_lines.draw(stransf, sproj);
    _ground.draw(stransf, sproj, _light);
+  std::cout << "IT WORKS!?!?!?!" << std::endl;
 
+  std::cout << "IT WORKS!?!?!?! x2" << std::endl;
    // Swap buffers and draw:
    glFlush();         // flush the pipeline (usually not necessary)
    glutSwapBuffers(); // we were drawing to the back buffer, now bring it to the front
@@ -345,11 +383,20 @@ void AppWindow::translation(GsMat &translate, float x, float y, float z)
 	translate.setl3(0.0f, 0.0f, 1.0f, z);
 	translate.setl4(0.0f, 0.0f, 0.0f, 1.0f);
 }
+
 void AppWindow::rotatey(GsMat &rotatey, int degrees)
 {
 	float thetay = degrees* PI / 180;
-	rotatey.setl1(cos(thetay),0.0f,sin(thetay),0.0f);
-	rotatey.setl2(0.0f,1.0f,0.0f,0.0f);
-	rotatey.setl3(-sin(thetay),0.0f,cos(thetay),0.0f);
+	rotatey.setl1(cos(thetay), 0.0f, sin(thetay), 0.0f);
+	rotatey.setl2(0.0f, 1.0f, 0.0f, 0.0f);
+	rotatey.setl3(-sin(thetay), 0.0f, cos(thetay), 0.0f);
 	rotatey.setl4(0.0f, 0.0f, 0.0f, 1.0f);
+
+}
+void AppWindow::rotation(GsMat &rotate, float theta)
+{
+	rotate.setl1(cos(theta), 0.0f, sin(theta), 0.0f);
+	rotate.setl2(0.0f, 1.0f, 0.0f, 0.0f);
+	rotate.setl3(-sin(theta), 0.0f, cos(theta), 0.0f);
+	rotate.setl4(0.0f, 0.0f, 0.0f, 1.0f);
 }
