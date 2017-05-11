@@ -25,6 +25,8 @@ public:
 	void move();
 
 	void rotate(float t);
+
+	void observe(GsVec lookHere);
 	//void rotate360();
 	~Camera();
 };

@@ -75,6 +75,11 @@ void Camera::rotate360() {
 }
 */
 
+void Camera::observe(GsVec lookHere) {
+	center = lookHere;
+	camview.lookat(eye, center, up);
+}
+
 Camera::~Camera() {
 
 }

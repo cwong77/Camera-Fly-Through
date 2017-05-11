@@ -58,6 +58,33 @@ void AppWindow::loadCameraCurve() {
 	cam.init(_cameraInterpolation);
 }
 
+void AppWindow::loadFlyCurve() {
+	//for balloon that loops
+	_flyControlPoints.push(GsVec(-1.0, 4.0, 0.0));
+	_flyControlPoints.push(GsVec(0.0, 4.0, 1.0));
+	_flyControlPoints.push(GsVec(1.0, 4.0, 0.0));
+	_flyControlPoints.push(GsVec(0.0, 4.0, -1.0));
+	_flyControlPoints.push(GsVec(-1.0, 4.0, 0.0));
+	_flyControlPoints.push(GsVec(0.0, 4.0, 1.0));
+
+	float interval = (float)(_flyControlPoints.size()) / 2048;
+	for (float i = 2; i < _flyControlPoints.size(); i += interval) {
+		_flyInterpolation.push(_cameraPath.eval_bspline(i, 3, _flyControlPoints));
+	}
+
+	//for balloon that goes back and forth
+	_flyControlPoints2.push(GsVec(-7.5, 4.0, -2.5));
+	_flyControlPoints2.push(GsVec(-5.0, 4.0, 0.0));
+	_flyControlPoints2.push(GsVec(0.0, 4.0, 0.0));
+	_flyControlPoints2.push(GsVec(0.0, 4.0, 5.0));
+	_flyControlPoints2.push(GsVec(5.5, 4.0, 5.5));
+
+	interval = (float)(_flyControlPoints2.size()) / 2048;
+	for (float i = 2; i < _flyControlPoints2.size(); i += interval) {
+		_flyInterpolation2.push(_cameraPath.eval_bspline(i, 3, _flyControlPoints2));
+	}
+}
+
 void AppWindow::initPrograms ()
  {
 
@@ -73,6 +100,7 @@ void AppWindow::initPrograms ()
    _door1.init("../models/Porta_casa.png");
    _house5.init();
    _balloon.init("../models/Stone_Brushed_Khaki.png");
+   _balloon2.init("../models/blue.png");
 
    _ground.init("../models/Ground.png");
 
@@ -81,10 +109,16 @@ void AppWindow::initPrograms ()
 
    _lines.init();	//normal lines for testing purposes
    _curveVisualization.init();
+   _flyVisualization.init();
+   _flyVisualization2.init();
    loadCameraCurve();	//initializes the camera with a curve to follow
+   loadFlyCurve();
    rotd.identity();
    _lines.build(_house1.NL, GsColor::red);
    _curveVisualization.build(_cameraInterpolation, GsColor::green);
+   _flyVisualization.build(_flyInterpolation, GsColor::red);
+   _flyVisualization2.build(_flyInterpolation2, GsColor::white);
+
 
    // Load demo model:
    loadModel ( 1 );
@@ -157,6 +191,12 @@ void AppWindow::loadModel ( int model )
    //printInfo(_gsm6);
    _gsm7.scale(.001f); // to fit our camera space
    _balloon.build(_gsm7);
+
+   //std::cout << "building cloud " << file7 << "...\n";
+   if (!_gsm7.load(file7)) std::cout << "Error!\n";
+   //printInfo(_gsm6);
+   _gsm7.scale(.001f); // to fit our camera space
+   _balloon2.build(_gsm7);
 
    if (!_gsm8.load(file8)) std::cout << "Error!\n";
    //printInfo(_gsm6);
@@ -298,15 +338,35 @@ void AppWindow::glutKeyboard ( unsigned char key, int x, int y )
  }
 
 void AppWindow::glutIdle() {
+	//flying stuff
+	//for balloon that goes back and forth
+	if (flyIndex2 >= _flyInterpolation2.size())	//if we are going past our curve, go backwards through the curve
+		flyBackwards = true;
+	else if (flyIndex2 < 0)	//go forwards
+		flyBackwards = false;
+	if (!flyBackwards)
+		flyIndex2++;
+	else
+		flyIndex2--;
+	
+	fly(_fly2, _flyInterpolation2[flyIndex2]);
+
+	//for balloon that loops
+	if (flyIndex >= _flyInterpolation.size())
+		flyIndex = 0;
+
+	fly(_fly, _flyInterpolation[flyIndex++]);
+
+	//camera stuff
+	cam.observe(_flyInterpolation[0]);
+
 	if (moveCamera) {
 		cam.move();
-		redraw();
 	}
 	if (rotateCam && parameter < 2*PI) {
 		//std::cout << "rotating\n";
 		parameter += interval;	//increment parameter
 		cam.rotate(parameter);	//rotate camera
-		redraw();
 	}
 	else if (parameter > 2 * PI) {	//once we have fully looped
 		//std::cout << "done rotating\n";
@@ -314,6 +374,7 @@ void AppWindow::glutIdle() {
 		parameter = 0;		//reset parameter
 		//moveCamera = true;	//start moving camera again
 	}
+	redraw();
 }
 
 void AppWindow::glutSpecial ( int key, int x, int y )
@@ -405,7 +466,7 @@ void AppWindow::glutDisplay ()
    translation(_transHouse2, 0.25f, 0.0f, -3.15f);
    translation(_transHouse3, -2.0f, 0.0f, -3.15f);
    translation(_transHouse4, 0.25f, 0.0f, -0.83f);
-   translation(_transballoon, 0.0f, 1.0f, 0.0f);
+   //translation(_transballoon, 0.0f, 1.0f, 0.0f);
 
    //Make all the rotations
    rotationy(_rotBridge, PI);
@@ -415,17 +476,20 @@ void AppWindow::glutDisplay ()
    // Draw:
    if (_viewaxis) _axis.draw(stransf, sproj);
 
-   _bridge.draw(stransf*_transBridge*_rotBridge, sproj, _light);
-   _house1.draw(stransf*_transHouse1*_rotHouse1, sproj, _light);
-   _house2.draw(stransf*_transHouse2, sproj, _light);
-   _house3.draw(stransf*_transHouse3, sproj, _light);
-   _house4.draw(stransf*_transHouse4*_rotHouse4, sproj, _light);
-   _balloon.draw(stransf*_transballoon, sproj, _light);
-   _door1.draw(stransf*location*transd*rotd, sproj, _light);
-   _house5.draw(stransf, sproj, _light);
+   //_bridge.draw(stransf*_transBridge*_rotBridge, sproj, _light);
+   //_house1.draw(stransf*_transHouse1*_rotHouse1, sproj, _light);
+   //_house2.draw(stransf*_transHouse2, sproj, _light);
+   //_house3.draw(stransf*_transHouse3, sproj, _light);
+   //_house4.draw(stransf*_transHouse4*_rotHouse4, sproj, _light);
+   _balloon.draw(stransf*_fly, sproj, _light);
+   _balloon2.draw(stransf*_fly2, sproj, _light);
+   //_door1.draw(stransf*location*transd*rotd, sproj, _light);
+   //_house5.draw(stransf, sproj, _light);
 
 
    //_lines.draw(stransf, sproj);
+   _flyVisualization.draw(stransf, sproj);
+   _flyVisualization2.draw(stransf, sproj);
 	_curveVisualization.draw(stransf, sproj);
    _ground.draw(stransf, sproj, _light);
 
@@ -471,4 +535,11 @@ void AppWindow::rotationz(GsMat &rotate, float theta)
 	rotate.setl2(sin(theta), cos(theta), 0.0f, 0.0f);
 	rotate.setl3(0.0f, 0.0f, 1.0f, 0.0f);
 	rotate.setl4(0.0f, 0.0f, 0.0f, 1.0f);
+}
+
+void AppWindow::fly(GsMat &fly, GsVec flyHere) {
+	fly.setl1(1.0f, 0.0, 0.0, flyHere.x);
+	fly.setl2(0.0, 1.0, 0.0, flyHere.y);
+	fly.setl3(0.0, 0.0, 1.0, flyHere.z);
+	fly.setl4(0.0, 0.0, 0.0, 1.0);
 }

@@ -30,7 +30,7 @@ class AppWindow : public GlutWindow
     SoAxis _axis;
 
 
-    SoModel _bridge, _house1, _house2, _house3, _house4, _door1, _balloon, _house5;
+    SoModel _bridge, _house1, _house2, _house3, _house4, _door1, _balloon, _balloon2, _house5;
 
 	SoPlane _ground;
 
@@ -53,6 +53,21 @@ class AppWindow : public GlutWindow
 	GsMat _rotBridge, _rotHouse1, _rotHouse2, _rotHouse3, _rotHouse4;
 
 	SoLines _lines;
+
+	/********************Flying stuff************/
+	CurveEval _flyPath;
+	CurveEval _flyPath2;
+	SoLines _flyVisualization;
+	SoLines _flyVisualization2;
+	GsArray<GsVec> _flyControlPoints;
+	GsArray<GsVec> _flyControlPoints2;
+	GsArray<GsVec> _flyInterpolation;
+	GsArray<GsVec> _flyInterpolation2;
+	GsMat _fly;
+	GsMat _fly2;
+	int flyIndex = 0;
+	int flyIndex2 = 0;
+	bool flyBackwards = false;
 	
 	/********************Camera and friends*****************************/
 	Camera cam;
@@ -93,6 +108,9 @@ class AppWindow : public GlutWindow
 	void AppWindow::rotationy(GsMat &rotate, float theta);
 	void AppWindow::rotationx(GsMat &rotate, float theta);
 	void AppWindow::rotationz(GsMat &rotate, float theta);
+
+	void AppWindow::loadFlyCurve();
+	void AppWindow::fly(GsMat &fly, GsVec flyHere);
 
  };
 
