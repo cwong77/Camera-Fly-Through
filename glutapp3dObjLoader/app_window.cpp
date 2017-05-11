@@ -77,18 +77,28 @@ void AppWindow::loadCameraCurve() {
 	_cameraControlPoints.push(GsVec(-1.55, .95, 1.2));
 	_cameraControlPoints.push(GsVec(-1.7, .95, 1.2));
 	_cameraControlPoints.push(GsVec(-1.7, .95, 2.5));
+	
 	//the great jump
 	_cameraControlPoints.push(GsVec(-1.7, 2.0, 3.0));
 	_cameraControlPoints.push(GsVec(-1.5, 1.5, 3.5));
 	_cameraControlPoints.push(GsVec(-1.5, 1.5, 4.0));
 	
-
-
+	//tower
+	_cameraControlPoints.push(GsVec(-1.5, 2.5, 4.0));
+	_cameraControlPoints.push(GsVec(-1.7, 2.5, 4.2));
+	_cameraControlPoints.push(GsVec(-2.7, 2.5, 4.2));
+	_cameraControlPoints.push(GsVec(-4.0, 2.5, 4.2));
+	GsVec a = GsVec(-4.0, 2.5, 4.2); GsVec b = GsVec(-1.0, 4.0, 0.0);
+	GsVec c = a+((b - a) / 15) ;
+	_cameraControlPoints.push(c);
+	_cameraControlPoints.push(GsVec(-1.0, 4.0, 0.0));
+	_cameraControlPoints.push(GsVec(-1.0, -1.0, 0.0));
+	_cameraControlPoints.push(GsVec(-1.0, -10.0, 0.0));
 
 	/***************************************************************/
 
 	//interpolate them
-	float interval = (float)(_cameraControlPoints.size()) / 2048;
+	float interval = (float)(_cameraControlPoints.size()) / 4056;
 	for (float i = 2; i < _cameraControlPoints.size(); i += interval){
 		_cameraInterpolation.push(_cameraPath.eval_bspline(i, 3, _cameraControlPoints));
 	}
@@ -147,10 +157,11 @@ void AppWindow::initPrograms ()
 
    _ground.init("../models/Ground.png");
    _skytop.init("../models/sky.png");
-   _skyback.init("../models/sky.png");
-   _skyleft.init("../models/sky.png");
-   _skyright.init("../models/sky.png");
-   _skyfront.init("../models/sky.png");
+   _skyback.init("../models/flat-landscape.png");
+   _skyleft.init("../models/sky2.png");
+   _skyright.init("../models/sky2.png");
+   _skyfront.init("../models/flat-landscape.png");
+   _surprise.init("../models/surprise.png");
 
    // set light:
    _light.set ( GsVec(0,5,10), GsColor(90,90,90,255), GsColor::white, GsColor::white );
@@ -233,7 +244,7 @@ void AppWindow::loadModel ( int model )
    //printInfo(_gsm5);
    _gsm6.scale(.01f); // to fit our camera space
    _door1.build(_gsm6);
-
+   
    //std::cout << "building cloud " << file7 << "...\n";
    if (!_gsm7.load(file7)) std::cout << "Error!\n";
    //printInfo(_gsm6);
@@ -245,7 +256,7 @@ void AppWindow::loadModel ( int model )
    //printInfo(_gsm6);
    _gsm7.scale(.001f); // to fit our camera space
    _balloon2.build(_gsm7);
-
+   
    if (!_gsm8.load(file8)) std::cout << "Error!\n";
    //printInfo(_gsm6);
    _gsm8.scale(.1f); // to fit our camera space
@@ -284,38 +295,6 @@ void AppWindow::glutKeyboard ( unsigned char key, int x, int y )
 		  translation(transd, -.05*cos(theta), 0, .05*sin(theta));
 		  redraw();
 		  break;
-      case 's' : std::cout<<"Smoothing normals...\n";
-                 _gsm1.smooth (GS_TORAD(35));
-				 _gsm2.smooth(GS_TORAD(35));
-				 _gsm3.smooth(GS_TORAD(35));
-				 _gsm4.smooth(GS_TORAD(35));
-				 _gsm5.smooth(GS_TORAD(35));
-				 _gsm7.smooth(GS_TORAD(35));
-                 _bridge.build(_gsm1);
-				 _house1.build(_gsm2);
-				 _house2.build(_gsm3);
-				 _house3.build(_gsm4);
-				 _house4.build(_gsm5);
-				 _balloon.build(_gsm7);
-				 
-                 redraw(); 
-                 break;
-      case 'f' : std::cout<<"Flat normals...\n";
-                _gsm1.flat();
-				_gsm2.flat();
-				_gsm3.flat();
-				_gsm4.flat();
-				_gsm5.flat();
-				_gsm7.flat();
-				_bridge.build(_gsm1);
-				_house1.build(_gsm2);
-				_house2.build(_gsm3);
-				_house3.build(_gsm4);
-				_house4.build(_gsm5);
-				_balloon.build(_gsm7);
-
-                 redraw(); 
-                 break;
 				 /* I don't think we should keep this functionality
       case 'p' : if ( !_bridge.phong() )
                   { std::cout<<"Switching to phong shader...\n";
@@ -410,7 +389,7 @@ void AppWindow::glutIdle() {
 	fly(_fly, _flyInterpolation[flyIndex++]);
 
 	//camera stuff
-	cam.observe(_flyInterpolation[flyIndex]);
+	//cam.observe(_flyInterpolation[flyIndex]);
 	
 	if (moveCamera && !pause) {
 		cam.move();
@@ -485,6 +464,10 @@ void AppWindow::glutDisplay ()
    {
 	   _ground.build(-10.0f, 10.0f, -10.0f, 10.0f, 0.0f); // xz plane at y=0.0f
    }
+   if (_surprise.changed) // needs update
+   {
+	   _surprise.build(-10.0f, 10.0f, -10.0f, 10.0f, 0.0f); // xz plane at y=0.0f
+   }
    if (_skytop.changed) // needs update
    {
 	   _skytop.build(-10.0f, 10.0f, -10.0f, 10.0f, 0.0f); // xz plane at y=0.0f
@@ -542,6 +525,7 @@ void AppWindow::glutDisplay ()
    translation(_transHouse5, -2.0f, 0.0f, 1.5f);
    //translation(_transballoon, 0.0f, 1.0f, 0.0f);
    translation(_transskytop, 0.0f, 6.0f, 0.0f);
+   translation(_transurprise, 0.0f, -6.0f, 0.0f);
    translation(_transskyfront, 0.0f, 0.0f, 10.0f);
    translation(_transskyback, 0.0f, 0.0f, -10.0f);
    translation(_transskyleft, 10.0f, 0.0f, 0.0f);
@@ -574,6 +558,7 @@ void AppWindow::glutDisplay ()
    _flyVisualization2.draw(stransf, sproj);
 	_curveVisualization.draw(stransf, sproj);
    _ground.draw(stransf, sproj, _light);
+   _surprise.draw(stransf*_transurprise, sproj, _light);
    _skytop.draw(stransf*_transskytop, sproj, _light);
    _skyback.draw(stransf*_transskyback*_rotskyback, sproj, _light);
    _skyfront.draw(stransf*_transskyfront*_rotskyfront, sproj, _light);
