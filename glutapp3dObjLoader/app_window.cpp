@@ -1,4 +1,3 @@
-#define PI 3.1419526
 # include <iostream>
 # include <gsim/gs.h>
 # include "app_window.h"
@@ -34,22 +33,26 @@ void AppWindow::loadCameraCurve() {
 						CAMERA ONLY LOOKS FORWARD
 	*****************************************/
 	//these are random control points
-	_cameraControlPoints.push(GsVec(0.0, 0.0, 0.0));
-	_cameraControlPoints.push(GsVec(.75, 0.25, 0.0));
-	_cameraControlPoints.push(GsVec(.5, .5, 0.0));
-	_cameraControlPoints.push(GsVec(.25, .75, 0.0));
-	_cameraControlPoints.push(GsVec(0.0, 0.0, 1.0));
+	_cameraControlPoints.push(GsVec(-2.0, 0.0, 0.0));
+	_cameraControlPoints.push(GsVec(-1.75, 0.25, 0.0));
+	_cameraControlPoints.push(GsVec(-1.5, .5, 0.0));
+	_cameraControlPoints.push(GsVec(-1.25, .75, 0.0));
+	_cameraControlPoints.push(GsVec(-1.0, .5, 0.0));
+	_cameraControlPoints.push(GsVec(0.0, .75, 0.0));
+	_cameraControlPoints.push(GsVec(.25, .5, 0.0));
+	_cameraControlPoints.push(GsVec(1.00, .25, 0.0));
+	_cameraControlPoints.push(GsVec(15.0, 0.0, 1.0));
 	/***************************************************************/
 
 	//interpolate them
-	float interval = (float)(_cameraControlPoints.size()) / 128;
+	float interval = (float)(_cameraControlPoints.size()) / 2048;
 	for (float i = 2; i < _cameraControlPoints.size(); i += interval){
 		_cameraInterpolation.push(_cameraPath.eval_bspline(i, 3, _cameraControlPoints));
 	}
 
-	for (int i = 0; i < _cameraInterpolation.size(); ++i) {
-		std::cout << _cameraInterpolation[i] << std::endl;
-	}
+	//for (int i = 0; i < _cameraInterpolation.size(); ++i) {
+	//	std::cout << _cameraInterpolation[i] << std::endl;
+	//}
 
 	//give them to the camera
 	cam.init(_cameraInterpolation);
@@ -57,6 +60,9 @@ void AppWindow::loadCameraCurve() {
 
 void AppWindow::initPrograms ()
  {
+
+	musicplayer.init();
+
    // Init my scene objects:
    _axis.init ();
    _bridge.init("../models/Texture.png");
@@ -72,9 +78,11 @@ void AppWindow::initPrograms ()
    _light.set ( GsVec(0,5,10), GsColor(90,90,90,255), GsColor::white, GsColor::white );
 
    _lines.init();	//normal lines for testing purposes
+   _curveVisualization.init();
    loadCameraCurve();	//initializes the camera with a curve to follow
    rotd.identity();
    _lines.build(_house1.NL, GsColor::red);
+   _curveVisualization.build(_cameraInterpolation, GsColor::green);
 
    // Load demo model:
    loadModel ( 1 );
@@ -152,6 +160,7 @@ void AppWindow::loadModel ( int model )
    //_cloud.build(_gsm7);
    
    _lines.build(_house2.NL, GsColor::red);
+   _curveVisualization.build(_cameraInterpolation, GsColor::green);
 
    redraw();
  }
@@ -248,15 +257,58 @@ void AppWindow::glutKeyboard ( unsigned char key, int x, int y )
 		  /*****************Don't know how to get it to loop because it only redraws at the end****/
 		  //for (int i = 0; i < _cameraInterpolation.size(); ++i) {
 			  //std::cout << "moving\n";
-			  cam.move();
-			  redraw();
+			  //cam.move();
+			  //redraw();
 		  //}
+		  moveCamera = true;
+		  break;
+		
+	  //pause curve movement and look around
+	  case 'r':
+		  //musicplayer.raiseVolume();
+		  /*
+		  for (float i = 0; i < 2 * PI; i += interval) {
+			  cam.rotate(i);
+			  redraw();
+		  }
+		  */
+		  
+		  moveCamera = false;	//pause camera movement
+		  rotateCam = true;		//start rotating
+
+		  /*
+		  std::cout << "b4 parameter: " << parameter << std::endl;
+		  parameter += interval;
+		  std::cout << "after parameter: " << parameter << std::endl;
+
+		  cam.rotate(parameter);
+		  redraw();
+		  */
 		  break;
 
       default : loadModel ( int(key-'0') );
                 break;
 	}
  }
+
+void AppWindow::glutIdle() {
+	if (moveCamera) {
+		cam.move();
+		redraw();
+	}
+	if (rotateCam && parameter < 2*PI) {
+		//std::cout << "rotating\n";
+		parameter += interval;	//increment parameter
+		cam.rotate(parameter);	//rotate camera
+		redraw();
+	}
+	else if (parameter > 2 * PI) {	//once we have fully looped
+		//std::cout << "done rotating\n";
+		rotateCam = false;	//stop rotating
+		parameter = 0;		//reset parameter
+		//moveCamera = true;	//start moving camera again
+	}
+}
 
 void AppWindow::glutSpecial ( int key, int x, int y )
  {
@@ -367,10 +419,11 @@ void AppWindow::glutDisplay ()
   
 	_door1.draw(stransf*location*transd*rotd, sproj, _light);
    //_lines.draw(stransf, sproj);
+	_curveVisualization.draw(stransf, sproj);
    _ground.draw(stransf, sproj, _light);
-  std::cout << "IT WORKS!?!?!?!" << std::endl;
+   //std::cout << "IT WORKS!?!?!?!" << std::endl;
 
-  std::cout << "IT WORKS!?!?!?! x2" << std::endl;
+   //std::cout << "IT WORKS!?!?!?! x2" << std::endl;
    // Swap buffers and draw:
    glFlush();         // flush the pipeline (usually not necessary)
    glutSwapBuffers(); // we were drawing to the back buffer, now bring it to the front

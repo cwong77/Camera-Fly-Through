@@ -76,6 +76,9 @@
     <ClCompile Include="..\so_plane.cpp">
       <Filter>myapp</Filter>
     </ClCompile>
+    <ClCompile Include="..\Jukebox.cpp">
+      <Filter>myapp</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\gsim\gs.h">
@@ -163,6 +166,9 @@
       <Filter>myapp</Filter>
     </ClInclude>
     <ClInclude Include="..\so_plane.h">
+      <Filter>myapp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Jukebox.h">
       <Filter>myapp</Filter>
     </ClInclude>
   </ItemGroup>

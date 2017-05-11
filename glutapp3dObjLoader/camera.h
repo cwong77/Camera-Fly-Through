@@ -23,5 +23,8 @@ public:
 
 	void lookForward(int i);
 	void move();
+
+	void rotate(float t);
+	//void rotate360();
 	~Camera();
 };

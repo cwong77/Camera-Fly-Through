@@ -125,6 +125,7 @@
     <ClCompile Include="..\gsim\gs_model_obj.cpp" />
     <ClCompile Include="..\gsim\gs_string.cpp" />
     <ClCompile Include="..\gsim\gs_strings.cpp" />
+    <ClCompile Include="..\Jukebox.cpp" />
     <ClCompile Include="..\so_axis.cpp" />
     <ClCompile Include="..\app_window.cpp" />
     <ClCompile Include="..\glut_window.cpp" />
@@ -156,6 +157,7 @@
     <ClInclude Include="..\gsim\gs_trace.h" />
     <ClInclude Include="..\gsim\stb_image.h" />
     <ClInclude Include="..\gsim\stb_image_write.h" />
+    <ClInclude Include="..\Jukebox.h" />
     <ClInclude Include="..\so_axis.h" />
     <ClInclude Include="..\app_window.h" />
     <ClInclude Include="..\glut_window.h" />

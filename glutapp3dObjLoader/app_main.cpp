@@ -26,7 +26,7 @@ int main ( int argc, char** argv )
    //std::cout<<"- this application crashed in one of my computers but I could not reproduce the problem, "<<
    //           "let me know if you find a bug somewhere in the code.\n\n";
    // Now create the window of your application:
-   AppWindow* w = new AppWindow ( ".obj loader CSE 170 Support Code", 300, 300, 640, 480 );
+   AppWindow* w = new AppWindow ( ".obj loader CSE 170 Support Code", 300, 300, 1920, 1080 );
 
    // Finally start the main loop:
    w->run ();

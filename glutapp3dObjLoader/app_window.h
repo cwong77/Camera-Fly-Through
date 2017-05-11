@@ -3,6 +3,8 @@
 #ifndef APP_WINDOW_H
 #define APP_WINDOW_H
 
+#define PI 3.1419526
+
 # include <gsim/gs_color.h>
 # include <gsim/gs_array.h>
 # include <gsim/gs_light.h>
@@ -15,6 +17,7 @@
 # include "so_lines.h"
 # include "curve_eval.h"
 # include "so_plane.h"
+# include "Jukebox.h"
 
 // The functionality of your application should be implemented inside AppWindow
 class AppWindow : public GlutWindow
@@ -26,15 +29,18 @@ class AppWindow : public GlutWindow
     // My scene objects:
     SoAxis _axis;
 
-    SoModel _bridge, _house1, _house2, _house3, _house4,_door1;
+    SoModel _bridge, _house1, _house2, _house3, _house4, _door1;
 
 	SoPlane _ground;
-	Camera cam;
+
 	//Variables for the door
-	GsMat rotd,transd, location;
+	GsMat rotd, transd, location;
 	int degrees;
 	float theta;
+
     // Scene data:
+	Jukebox musicplayer;
+
     bool  _viewaxis = false;
 
     GsModel _gsm1, _gsm2, _gsm3, _gsm4, _gsm5,_gsm6,_gsm7;
@@ -46,11 +52,17 @@ class AppWindow : public GlutWindow
 	GsMat _rotBridge, _rotHouse1, _rotHouse2, _rotHouse3, _rotHouse4;
 
 	SoLines _lines;
-
+	
+	/********************Camera and friends*****************************/
+	Camera cam;
 	CurveEval _cameraPath;
-
 	GsArray<GsVec> _cameraControlPoints;
 	GsArray<GsVec> _cameraInterpolation;
+	float interval = (2 * PI) / 1440;									//rotation angle
+	SoLines _curveVisualization;
+	bool moveCamera = false;											//whether or not to move camera
+	bool rotateCam = false;												//whether or not to rotate camera
+	float parameter = 0;												//this is for rotating camera by parameter
     
     // App data:
     enum MenuEv { evOption0, evOption1 };
@@ -72,6 +84,7 @@ class AppWindow : public GlutWindow
     virtual void glutDisplay ();
     virtual void glutReshape ( int w, int h );
 	virtual void loadCameraCurve();
+	virtual void glutIdle();
 	void AppWindow::translation(GsMat &transform, float x, float y, float z);
 
 	void AppWindow::rotatey(GsMat &rotatey, int degrees);
