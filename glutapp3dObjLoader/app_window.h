@@ -32,7 +32,7 @@ class AppWindow : public GlutWindow
 
     SoModel _bridge, _house1, _house2, _house3, _house4, _door1, _balloon, _balloon2, _house5;
 
-	SoPlane _ground;
+	SoPlane _ground, _skytop, _skyfront, _skyback, _skyleft, _skyright;
 
 	//Variables for the door
 	GsMat rotd, transd, location;
@@ -49,8 +49,8 @@ class AppWindow : public GlutWindow
     GsLight _light;
 	float tx, ty, tz;
 
-	GsMat _transBridge, _transHouse1, _transHouse2, _transHouse3, _transHouse4, _transballoon;
-	GsMat _rotBridge, _rotHouse1, _rotHouse2, _rotHouse3, _rotHouse4;
+	GsMat _transBridge, _transHouse1, _transHouse2, _transHouse3, _transHouse4, _transHouse5, _transballoon, _transskytop, _transskyfront, _transskyback, _transskyleft, _transskyright;
+	GsMat _rotBridge, _rotHouse1, _rotHouse2, _rotHouse3, _rotHouse4, _rotskyfront, _rotskyback, _rotskyleft, _rotskyright;
 
 	SoLines _lines;
 
@@ -79,6 +79,7 @@ class AppWindow : public GlutWindow
 	bool moveCamera = false;											//whether or not to move camera
 	bool rotateCam = false;												//whether or not to rotate camera
 	float parameter = 0;												//this is for rotating camera by parameter
+	bool pause = true;
     
     // App data:
     enum MenuEv { evOption0, evOption1 };

@@ -32,16 +32,59 @@ void AppWindow::loadCameraCurve() {
 						NOT HEAVILY TESTED SO CALL ME IF IT DOESN'T WORK
 						CAMERA ONLY LOOKS FORWARD
 	*****************************************/
-	//these are random control points
-	_cameraControlPoints.push(GsVec(-2.0, 0.0, 0.0));
-	_cameraControlPoints.push(GsVec(-1.75, 0.25, 0.0));
-	_cameraControlPoints.push(GsVec(-1.5, .5, 0.0));
-	_cameraControlPoints.push(GsVec(-1.25, .75, 0.0));
-	_cameraControlPoints.push(GsVec(-1.0, .5, 0.0));
-	_cameraControlPoints.push(GsVec(0.0, .75, 0.0));
-	_cameraControlPoints.push(GsVec(.25, .5, 0.0));
-	_cameraControlPoints.push(GsVec(1.00, .25, 0.0));
-	_cameraControlPoints.push(GsVec(15.0, 0.0, 1.0));
+	//starting point
+	
+	_cameraControlPoints.push(GsVec(5.0, 0.25, -2.0));
+	_cameraControlPoints.push(GsVec(3.00, .5, -2.0));
+	_cameraControlPoints.push(GsVec(2.5, .5, -2.0));
+	_cameraControlPoints.push(GsVec(1.0, .5, -2.0));
+	_cameraControlPoints.push(GsVec(-1.0, .5, -2.0));
+	_cameraControlPoints.push(GsVec(-1.0, .5, 1.0));
+	_cameraControlPoints.push(GsVec(-1.0, .5, 2.0));
+	
+	_cameraControlPoints.push(GsVec(-2.0, .5, 2.0));
+	_cameraControlPoints.push(GsVec(-4.0, .01, 2.0));
+	_cameraControlPoints.push(GsVec(-3.0, .05, 1.5));
+	_cameraControlPoints.push(GsVec(-2.3, .05, .75));
+	//second floor
+	_cameraControlPoints.push(GsVec(-2.3, .35, 1.9));
+	_cameraControlPoints.push(GsVec(-2.2, .35, 1.9));
+
+	_cameraControlPoints.push(GsVec(-1.7, .35, 1.9));
+	_cameraControlPoints.push(GsVec(-1.6, .35, 1.9));
+	//out the second door
+	_cameraControlPoints.push(GsVec(-1.7, .35, 1.4));
+	_cameraControlPoints.push(GsVec(-1.7, .35, 1.2));
+	_cameraControlPoints.push(GsVec(-1.63, .35, 1.2));
+	_cameraControlPoints.push(GsVec(-1.7, .35, 1.3));
+	_cameraControlPoints.push(GsVec(-1.65, .35, 1.9));
+	_cameraControlPoints.push(GsVec(-1.55, .35, 1.9));
+	
+	//third floor
+	_cameraControlPoints.push(GsVec(-1.55, .65, 1.4));
+	_cameraControlPoints.push(GsVec(-1.55, .65, 1.2));
+
+	_cameraControlPoints.push(GsVec(-1.7, .65, 1.3));
+	_cameraControlPoints.push(GsVec(-1.7, .65, 1.9));
+
+	_cameraControlPoints.push(GsVec(-1.65, .65, 1.9));
+	_cameraControlPoints.push(GsVec(-1.55, .65, 1.9));
+	
+	_cameraControlPoints.push(GsVec(-1.55, .65, 1.8));
+	_cameraControlPoints.push(GsVec(-1.55, .95, 1.3));
+	
+	//top floor
+	_cameraControlPoints.push(GsVec(-1.55, .95, 1.2));
+	_cameraControlPoints.push(GsVec(-1.7, .95, 1.2));
+	_cameraControlPoints.push(GsVec(-1.7, .95, 2.5));
+	//the great jump
+	_cameraControlPoints.push(GsVec(-1.7, 2.0, 3.0));
+	_cameraControlPoints.push(GsVec(-1.5, 1.5, 3.5));
+	_cameraControlPoints.push(GsVec(-1.5, 1.5, 4.0));
+	
+
+
+
 	/***************************************************************/
 
 	//interpolate them
@@ -103,6 +146,11 @@ void AppWindow::initPrograms ()
    _balloon2.init("../models/blue.png");
 
    _ground.init("../models/Ground.png");
+   _skytop.init("../models/sky.png");
+   _skyback.init("../models/sky.png");
+   _skyleft.init("../models/sky.png");
+   _skyright.init("../models/sky.png");
+   _skyfront.init("../models/sky.png");
 
    // set light:
    _light.set ( GsVec(0,5,10), GsColor(90,90,90,255), GsColor::white, GsColor::white );
@@ -331,6 +379,10 @@ void AppWindow::glutKeyboard ( unsigned char key, int x, int y )
 		  redraw();
 		  */
 		  break;
+		  
+	  case 'p':
+		  pause = !pause;
+		  break;
 
       default : loadModel ( int(key-'0') );
                 break;
@@ -358,9 +410,9 @@ void AppWindow::glutIdle() {
 	fly(_fly, _flyInterpolation[flyIndex++]);
 
 	//camera stuff
-	cam.observe(_flyInterpolation[0]);
-
-	if (moveCamera) {
+	cam.observe(_flyInterpolation[flyIndex]);
+	
+	if (moveCamera && !pause) {
 		cam.move();
 	}
 	if (rotateCam && parameter < 2*PI) {
@@ -433,6 +485,26 @@ void AppWindow::glutDisplay ()
    {
 	   _ground.build(-10.0f, 10.0f, -10.0f, 10.0f, 0.0f); // xz plane at y=0.0f
    }
+   if (_skytop.changed) // needs update
+   {
+	   _skytop.build(-10.0f, 10.0f, -10.0f, 10.0f, 0.0f); // xz plane at y=0.0f
+   }
+   if (_skyfront.changed) // needs update
+   {
+	   _skyfront.build(-10.0f, 10.0f, -10.0f, 10.0f, 0.0f); // xz plane at y=0.0f
+   }
+   if (_skyback.changed) // needs update
+   {
+	   _skyback.build(-10.0f, 10.0f, -10.0f, 10.0f, 0.0f); // xz plane at y=0.0f
+   }
+   if (_skyleft.changed) // needs update
+   {
+	   _skyleft.build(-10.0f, 10.0f, -10.0f, 10.0f, 0.0f); // xz plane at y=0.0f
+   }
+   if (_skyright.changed) // needs update
+   {
+	   _skyright.build(-10.0f, 10.0f, -10.0f, 10.0f, 0.0f); // xz plane at y=0.0f
+   }
 
    // Define our scene transformation:
    GsMat rx, ry, stransf;
@@ -467,31 +539,46 @@ void AppWindow::glutDisplay ()
    translation(_transHouse3, -2.0f, 0.0f, -3.15f);
    translation(_transHouse4, 0.25f, 0.0f, -0.83f);
    //translation(_transballoon, 0.0f, 1.0f, 0.0f);
+   translation(_transHouse5, -2.0f, 0.0f, 1.5f);
+   //translation(_transballoon, 0.0f, 1.0f, 0.0f);
+   translation(_transskytop, 0.0f, 6.0f, 0.0f);
+   translation(_transskyfront, 0.0f, 0.0f, 10.0f);
+   translation(_transskyback, 0.0f, 0.0f, -10.0f);
+   translation(_transskyleft, 10.0f, 0.0f, 0.0f);
+   translation(_transskyright, -10.0f, 0.0f, 0.0f);
 
    //Make all the rotations
+   rotationx(_rotskyfront, PI / 2);
+   rotationx(_rotskyback, PI / 2);
    rotationy(_rotBridge, PI);
    rotationy(_rotHouse1, PI);
    rotationy(_rotHouse4, PI);
+   rotationz(_rotskyleft, PI / 2);
+   rotationz(_rotskyright, PI / 2);
 
    // Draw:
    if (_viewaxis) _axis.draw(stransf, sproj);
 
-   //_bridge.draw(stransf*_transBridge*_rotBridge, sproj, _light);
-   //_house1.draw(stransf*_transHouse1*_rotHouse1, sproj, _light);
-   //_house2.draw(stransf*_transHouse2, sproj, _light);
-   //_house3.draw(stransf*_transHouse3, sproj, _light);
-   //_house4.draw(stransf*_transHouse4*_rotHouse4, sproj, _light);
+   _bridge.draw(stransf*_transBridge*_rotBridge, sproj, _light);
+   _house1.draw(stransf*_transHouse1*_rotHouse1, sproj, _light);
+   _house2.draw(stransf*_transHouse2, sproj, _light);
+   _house3.draw(stransf*_transHouse3, sproj, _light);
+   _house4.draw(stransf*_transHouse4*_rotHouse4, sproj, _light);
    _balloon.draw(stransf*_fly, sproj, _light);
    _balloon2.draw(stransf*_fly2, sproj, _light);
-   //_door1.draw(stransf*location*transd*rotd, sproj, _light);
-   //_house5.draw(stransf, sproj, _light);
-
+   _door1.draw(stransf*location*transd*rotd, sproj, _light);
+   _house5.draw(stransf*_transHouse5, sproj, _light);
 
    //_lines.draw(stransf, sproj);
    _flyVisualization.draw(stransf, sproj);
    _flyVisualization2.draw(stransf, sproj);
 	_curveVisualization.draw(stransf, sproj);
    _ground.draw(stransf, sproj, _light);
+   _skytop.draw(stransf*_transskytop, sproj, _light);
+   _skyback.draw(stransf*_transskyback*_rotskyback, sproj, _light);
+   _skyfront.draw(stransf*_transskyfront*_rotskyfront, sproj, _light);
+   _skyleft.draw(stransf*_transskyleft*_rotskyleft, sproj, _light);
+   _skyright.draw(stransf*_transskyright*_rotskyright, sproj, _light);
 
    // Swap buffers and draw:
    glFlush();         // flush the pipeline (usually not necessary)
