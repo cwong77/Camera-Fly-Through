@@ -75,6 +75,11 @@ void AppWindow::initPrograms ()
    _balloon.init("../models/Stone_Brushed_Khaki.png");
 
    _ground.init("../models/Ground.png");
+   _skytop.init("../models/sky.png");
+   _skyback.init("../models/sky.png");
+   _skyleft.init("../models/sky.png");
+   _skyright.init("../models/sky.png");
+   _skyfront.init("../models/sky.png");
 
    // set light:
    _light.set ( GsVec(0,5,10), GsColor(90,90,90,255), GsColor::white, GsColor::white );
@@ -372,6 +377,26 @@ void AppWindow::glutDisplay ()
    {
 	   _ground.build(-10.0f, 10.0f, -10.0f, 10.0f, 0.0f); // xz plane at y=0.0f
    }
+   if (_skytop.changed) // needs update
+   {
+	   _skytop.build(-10.0f, 10.0f, -10.0f, 10.0f, 0.0f); // xz plane at y=0.0f
+   }
+   if (_skyfront.changed) // needs update
+   {
+	   _skyfront.build(-10.0f, 10.0f, -10.0f, 10.0f, 0.0f); // xz plane at y=0.0f
+   }
+   if (_skyback.changed) // needs update
+   {
+	   _skyback.build(-10.0f, 10.0f, -10.0f, 10.0f, 0.0f); // xz plane at y=0.0f
+   }
+   if (_skyleft.changed) // needs update
+   {
+	   _skyleft.build(-10.0f, 10.0f, -10.0f, 10.0f, 0.0f); // xz plane at y=0.0f
+   }
+   if (_skyright.changed) // needs update
+   {
+	   _skyright.build(-10.0f, 10.0f, -10.0f, 10.0f, 0.0f); // xz plane at y=0.0f
+   }
 
    // Define our scene transformation:
    GsMat rx, ry, stransf;
@@ -406,11 +431,20 @@ void AppWindow::glutDisplay ()
    translation(_transHouse3, -2.0f, 0.0f, -3.15f);
    translation(_transHouse4, 0.25f, 0.0f, -0.83f);
    translation(_transballoon, 0.0f, 1.0f, 0.0f);
+   translation(_transskytop, 0.0f, 6.0f, 0.0f);
+   translation(_transskyfront, 0.0f, 0.0f, 10.0f);
+   translation(_transskyback, 0.0f, 0.0f, -10.0f);
+   translation(_transskyleft, 10.0f, 0.0f, 0.0f);
+   translation(_transskyright, -10.0f, 0.0f, 0.0f);
 
    //Make all the rotations
+   rotationx(_rotskyfront, PI / 2);
+   rotationx(_rotskyback, PI / 2);
    rotationy(_rotBridge, PI);
    rotationy(_rotHouse1, PI);
    rotationy(_rotHouse4, PI);
+   rotationz(_rotskyleft, PI / 2);
+   rotationz(_rotskyright, PI / 2);
 
    // Draw:
    if (_viewaxis) _axis.draw(stransf, sproj);
@@ -424,10 +458,14 @@ void AppWindow::glutDisplay ()
    _door1.draw(stransf*location*transd*rotd, sproj, _light);
    _house5.draw(stransf, sproj, _light);
 
-
    //_lines.draw(stransf, sproj);
 	_curveVisualization.draw(stransf, sproj);
    _ground.draw(stransf, sproj, _light);
+   _skytop.draw(stransf*_transskytop, sproj, _light);
+   _skyback.draw(stransf*_transskyback*_rotskyback, sproj, _light);
+   _skyfront.draw(stransf*_transskyfront*_rotskyfront, sproj, _light);
+   _skyleft.draw(stransf*_transskyleft*_rotskyleft, sproj, _light);
+   _skyright.draw(stransf*_transskyright*_rotskyright, sproj, _light);
 
    // Swap buffers and draw:
    glFlush();         // flush the pipeline (usually not necessary)
