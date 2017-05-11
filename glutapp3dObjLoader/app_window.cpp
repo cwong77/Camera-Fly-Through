@@ -356,9 +356,9 @@ void AppWindow::glutDisplay ()
    translation(_transballoon, 0.0f, 1.0f, 0.0f);
 
    //Make all the rotations
-   rotation(_rotBridge, PI);
-   rotation(_rotHouse1, PI);
-   rotation(_rotHouse4, PI);
+   rotationy(_rotBridge, PI);
+   rotationy(_rotHouse1, PI);
+   rotationy(_rotHouse4, PI);
 
    // Draw:
    if (_viewaxis) _axis.draw(stransf, sproj);
@@ -398,10 +398,24 @@ void AppWindow::rotatey(GsMat &rotatey, int degrees)
 	rotatey.setl4(0.0f, 0.0f, 0.0f, 1.0f);
 
 }
-void AppWindow::rotation(GsMat &rotate, float theta)
+void AppWindow::rotationx(GsMat &rotate, float theta)
+{
+	rotate.setl1(1.0f, 0.0f, 0.0f, 0.0f);
+	rotate.setl2(0.0f, cos(theta), -sin(theta), 0.0f);
+	rotate.setl3(0.0f, sin(theta), cos(theta), 0.0f);
+	rotate.setl4(0.0f, 0.0f, 0.0f, 1.0f);
+}
+void AppWindow::rotationy(GsMat &rotate, float theta)
 {
 	rotate.setl1(cos(theta), 0.0f, sin(theta), 0.0f);
 	rotate.setl2(0.0f, 1.0f, 0.0f, 0.0f);
 	rotate.setl3(-sin(theta), 0.0f, cos(theta), 0.0f);
+	rotate.setl4(0.0f, 0.0f, 0.0f, 1.0f);
+}
+void AppWindow::rotationz(GsMat &rotate, float theta)
+{
+	rotate.setl1(cos(theta), -sin(theta), 0.0f, 0.0f);
+	rotate.setl2(sin(theta), cos(theta), 0.0f, 0.0f);
+	rotate.setl3(0.0f, 0.0f, 1.0f, 0.0f);
 	rotate.setl4(0.0f, 0.0f, 0.0f, 1.0f);
 }

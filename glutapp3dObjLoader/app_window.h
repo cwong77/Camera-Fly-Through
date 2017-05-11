@@ -76,7 +76,9 @@ class AppWindow : public GlutWindow
 
 	void AppWindow::rotatey(GsMat &rotatey, int degrees);
 
-	void AppWindow::rotation(GsMat &rotate, float theta);
+	void AppWindow::rotationy(GsMat &rotate, float theta);
+	void AppWindow::rotationx(GsMat &rotate, float theta);
+	void AppWindow::rotationz(GsMat &rotate, float theta);
 
  };
 
