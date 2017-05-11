@@ -33,7 +33,7 @@ void AppWindow::loadCameraCurve() {
 						CAMERA ONLY LOOKS FORWARD
 	*****************************************/
 	//starting point
-	
+	/*
 	_cameraControlPoints.push(GsVec(5.0, 0.25, -2.0));
 	_cameraControlPoints.push(GsVec(3.00, .5, -2.0));
 	_cameraControlPoints.push(GsVec(2.5, .5, -2.0));
@@ -41,19 +41,23 @@ void AppWindow::loadCameraCurve() {
 	_cameraControlPoints.push(GsVec(-1.0, .5, -2.0));
 	_cameraControlPoints.push(GsVec(-1.0, .5, 1.0));
 	_cameraControlPoints.push(GsVec(-1.0, .5, 2.0));
-	
+	*/
 	_cameraControlPoints.push(GsVec(-2.0, .5, 2.0));
 	_cameraControlPoints.push(GsVec(-4.0, .01, 2.0));
 	_cameraControlPoints.push(GsVec(-3.0, .05, 1.5));
 	_cameraControlPoints.push(GsVec(-2.3, .05, .75));
+	
 	//second floor
 	_cameraControlPoints.push(GsVec(-2.3, .35, 1.9));
 	_cameraControlPoints.push(GsVec(-2.2, .35, 1.9));
 
 	_cameraControlPoints.push(GsVec(-1.7, .35, 1.9));
 	_cameraControlPoints.push(GsVec(-1.6, .35, 1.9));
+
 	//out the second door
+	
 	_cameraControlPoints.push(GsVec(-1.7, .35, 1.4));
+	/*
 	_cameraControlPoints.push(GsVec(-1.7, .35, 1.2));
 	_cameraControlPoints.push(GsVec(-1.63, .35, 1.2));
 	_cameraControlPoints.push(GsVec(-1.7, .35, 1.3));
@@ -81,7 +85,7 @@ void AppWindow::loadCameraCurve() {
 	_cameraControlPoints.push(GsVec(-1.7, 2.0, 3.0));
 	_cameraControlPoints.push(GsVec(-1.5, 1.5, 3.5));
 	_cameraControlPoints.push(GsVec(-1.5, 1.5, 4.0));
-	
+	*/
 
 
 
@@ -341,9 +345,9 @@ void AppWindow::glutKeyboard ( unsigned char key, int x, int y )
 				 */
 	  case 'i': ty += 0.05f; redraw(); break;
 	  case 'k': ty -= 0.05f; redraw(); break;
-	  case 'j': tx -= 0.05f; redraw(); break;
-	  case 'l': tx += 0.05f; redraw(); break;
-	  case '7': tz -= 0.05f; redraw(); break;
+	  case 'j': tx -= 0.05f; redraw(); /*std::cout << "tx: " << tx << std::endl;*/ break;
+	  case 'l': tx += 0.05f; redraw(); break; 
+	  case '7': tz -= 0.05f; redraw(); /*std::cout << "tz: " << tz << std::endl;*/ break;
 	  case '8': tz += 0.05f; redraw(); break;
 
 	  case 'n': 
@@ -410,7 +414,7 @@ void AppWindow::glutIdle() {
 	fly(_fly, _flyInterpolation[flyIndex++]);
 
 	//camera stuff
-	cam.observe(_flyInterpolation[flyIndex]);
+	//cam.observe(_flyInterpolation[flyIndex]);
 	
 	if (moveCamera && !pause) {
 		cam.move();
@@ -546,6 +550,7 @@ void AppWindow::glutDisplay ()
    translation(_transskyback, 0.0f, 0.0f, -10.0f);
    translation(_transskyleft, 10.0f, 0.0f, 0.0f);
    translation(_transskyright, -10.0f, 0.0f, 0.0f);
+   translation(location, -1.63f, .325f, 1.55f);
 
    //Make all the rotations
    rotationx(_rotskyfront, PI / 2);
